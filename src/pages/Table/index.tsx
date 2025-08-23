@@ -14,6 +14,29 @@ import UpdateForm, { FormValueType } from './components/UpdateForm';
 import data from './data.json';
 const { addUser, deleteUser, modifyUser } = services.UserController;
 
+function common(columns) {
+  const width = columns
+    .map((item) => item.width || 100)
+    .reduce((pre, next) => pre + next);
+  return {
+    scroll: {
+      x: width,
+    },
+    bordered: true,
+    rowKey: (record: any, index: any) => {
+      const obj = {
+        index, // 防止后端返回一样的数据
+        ...record,
+      };
+      const { id } = record;
+      if (id) {
+        return id;
+      }
+      return JSON.stringify(obj);
+    },
+  };
+}
+
 /**
  * 添加节点
  * @param fields
@@ -87,20 +110,22 @@ const TableList: React.FC<unknown> = () => {
       分数: pre.分数 + cur.分数,
     };
   }).分数;
-  const newData = data.map((item, index, arr) => {
-    const obj = { ...item, 原始分数: item.分数 };
-    arr.forEach((item1) => {
-      if (item1.分数转移 === obj.名字) {
-        obj.分数 = obj.分数 + item1.分数;
+  const newData = data
+    .map((item, index, arr) => {
+      const obj = { ...item, 原始分数: item.分数 };
+      arr.forEach((item1) => {
+        if (item1.分数转移 === obj.名字) {
+          obj.分数 = obj.分数 + item1.分数;
+        }
+      });
+      obj.分数国战占比 = ((obj.分数 / 2187660487) * 100).toFixed(2);
+      obj.分数排名占比 = ((obj.分数 / 排名总分) * 100).toFixed(2);
+      if (item.分数转移) {
+        obj.分数 = 0;
       }
-    });
-    obj.分数国战占比 = ((obj.分数 / 2187660487) * 100).toFixed(2);
-    obj.分数排名占比 = ((obj.分数 / 排名总分) * 100).toFixed(2);
-    if (item.分数转移) {
-      obj.分数 = 0;
-    }
-    return obj;
-  });
+      return obj;
+    })
+    .sort((a, b) => b.分数 - a.分数);
   const [dataSource, setDataSource] = useState(newData);
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
@@ -111,11 +136,11 @@ const TableList: React.FC<unknown> = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.UserInfo[]>([]);
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
-      title: '区内排名',
+      title: '区排名',
       valueType: 'index',
     },
     {
-      title: '国战排名',
+      title: '国排名',
       dataIndex: '国战排名',
     },
     {
@@ -139,15 +164,16 @@ const TableList: React.FC<unknown> = () => {
       valueType: 'text',
     },
     {
-      title: '分数转移',
-      dataIndex: '分数转移',
-      valueType: 'text',
-    },
-    {
       title: '分数',
       dataIndex: '分数',
       valueType: 'text',
     },
+    {
+      title: '分数转移',
+      dataIndex: '分数转移',
+      valueType: 'text',
+    },
+
     {
       title: '原始分数',
       dataIndex: '原始分数',
@@ -175,7 +201,6 @@ const TableList: React.FC<unknown> = () => {
         headerTitle="查询表格"
         actionRef={actionRef}
         pagination={false}
-        rowKey="区内排名"
         search={false}
         toolBarRender={() => [
           <Button
@@ -203,6 +228,7 @@ const TableList: React.FC<unknown> = () => {
         ]}
         dataSource={dataSource}
         columns={columns}
+        {...common(columns)}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
