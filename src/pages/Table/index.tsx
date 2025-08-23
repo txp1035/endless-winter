@@ -7,13 +7,12 @@ import {
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Divider, Drawer, message } from 'antd';
+import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import CreateForm from './components/CreateForm';
 import UpdateForm, { FormValueType } from './components/UpdateForm';
-
-const { addUser, queryUserList, deleteUser, modifyUser } =
-  services.UserController;
+import data from './data.json';
+const { addUser, deleteUser, modifyUser } = services.UserController;
 
 /**
  * 添加节点
@@ -83,6 +82,26 @@ const handleRemove = async (selectedRows: API.UserInfo[]) => {
 };
 
 const TableList: React.FC<unknown> = () => {
+  const 排名总分 = data.reduce((pre, cur) => {
+    return {
+      分数: pre.分数 + cur.分数,
+    };
+  }).分数;
+  const newData = data.map((item, index, arr) => {
+    const obj = { ...item, 原始分数: item.分数 };
+    arr.forEach((item1) => {
+      if (item1.分数转移 === obj.名字) {
+        obj.分数 = obj.分数 + item1.分数;
+      }
+    });
+    obj.分数国战占比 = ((obj.分数 / 2187660487) * 100).toFixed(2);
+    obj.分数排名占比 = ((obj.分数 / 排名总分) * 100).toFixed(2);
+    if (item.分数转移) {
+      obj.分数 = 0;
+    }
+    return obj;
+  });
+  const [dataSource, setDataSource] = useState(newData);
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
@@ -92,92 +111,98 @@ const TableList: React.FC<unknown> = () => {
   const [selectedRowsState, setSelectedRows] = useState<API.UserInfo[]>([]);
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
-      title: '名称',
-      dataIndex: 'name',
-      tip: '名称是唯一的 key',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
+      title: '区内排名',
+      valueType: 'index',
+    },
+    {
+      title: '国战排名',
+      dataIndex: '国战排名',
+    },
+    {
+      title: '组织',
+      dataIndex: '组织',
+      filters: true,
+      onFilter: true,
+      valueType: 'select',
+      valueEnum: {
+        520: { text: '520' },
+        qqq: { text: 'qqq' },
+        one: { text: 'one' },
+        no2: { text: 'no2' },
+        avn: { text: 'avn' },
+        kkk: { text: 'kkk' },
       },
     },
     {
-      title: '昵称',
-      dataIndex: 'nickName',
+      title: '名字',
+      dataIndex: '名字',
       valueType: 'text',
     },
     {
-      title: '性别',
-      dataIndex: 'gender',
-      hideInForm: true,
-      valueEnum: {
-        0: { text: '男', status: 'MALE' },
-        1: { text: '女', status: 'FEMALE' },
-      },
+      title: '分数转移',
+      dataIndex: '分数转移',
+      valueType: 'text',
     },
     {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            配置
-          </a>
-          <Divider type="vertical" />
-          <a href="">订阅警报</a>
-        </>
-      ),
+      title: '分数',
+      dataIndex: '分数',
+      valueType: 'text',
+    },
+    {
+      title: '原始分数',
+      dataIndex: '原始分数',
+      valueType: 'text',
+    },
+    {
+      title: '分数国战占比',
+      dataIndex: '分数国战占比',
+      valueType: 'text',
+    },
+    {
+      title: '分数排名占比',
+      dataIndex: '分数排名占比',
+      valueType: 'text',
     },
   ];
 
   return (
     <PageContainer
       header={{
-        title: 'CRUD 示例',
+        title: '2808国战备战排名',
       }}
     >
       <ProTable<API.UserInfo>
         headerTitle="查询表格"
         actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
+        pagination={false}
+        rowKey="区内排名"
+        search={false}
         toolBarRender={() => [
           <Button
             key="1"
             type="primary"
-            onClick={() => handleModalVisible(true)}
+            onClick={() => {
+              const data = JSON.parse(JSON.stringify(dataSource));
+              data.sort((a, b) => b.原始分数 - a.原始分数);
+              setDataSource(data);
+            }}
           >
-            新建
+            原始分数排序
+          </Button>,
+          <Button
+            key="2"
+            type="primary"
+            onClick={() => {
+              const data = JSON.parse(JSON.stringify(dataSource));
+              data.sort((a, b) => b.分数 - a.分数);
+              setDataSource(data);
+            }}
+          >
+            分数排序
           </Button>,
         ]}
-        request={async (params, sorter, filter) => {
-          const { data, success } = await queryUserList({
-            ...params,
-            // FIXME: remove @ts-ignore
-            // @ts-ignore
-            sorter,
-            filter,
-          });
-          return {
-            data: data?.list || [],
-            success,
-          };
-        }}
+        dataSource={dataSource}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
       />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar

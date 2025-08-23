@@ -7,29 +7,19 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {
-    title: '@umijs/max',
+    title: '无尽冬日',
   },
   routes: [
     {
       path: '/',
-      redirect: '/home',
+      redirect: '/table',
     },
+
     {
-      name: '首页',
-      path: '/home',
-      component: './Home',
-    },
-    {
-      name: '权限演示',
-      path: '/access',
-      component: './Access',
-    },
-    {
-      name: ' CRUD 示例',
+      name: '2808国战备战排名',
       path: '/table',
       component: './Table',
     },
   ],
   npmClient: 'pnpm',
 });
-
