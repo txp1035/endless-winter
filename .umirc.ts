@@ -7,18 +7,22 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {
-    title: '无尽冬日',
+    title: '无尽冬日2808国战备战',
   },
   routes: [
     {
       path: '/',
-      redirect: '/table',
+      redirect: '/personal',
     },
-
     {
-      name: '2808国战备战排名',
-      path: '/table',
-      component: './Table',
+      name: '个人排名',
+      path: '/personal',
+      component: './Personal',
+    },
+    {
+      name: '联盟排名',
+      path: '/Alliance',
+      component: './Alliance',
     },
   ],
   npmClient: 'pnpm',
