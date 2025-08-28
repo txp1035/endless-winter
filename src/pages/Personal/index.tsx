@@ -46,6 +46,7 @@ const TableList: React.FC<unknown> = () => {
       });
       obj.分数国战占比 = ((obj.分数 / 2187660487) * 100).toFixed(2);
       obj.分数排名占比 = ((obj.分数 / 排名总分) * 100).toFixed(2);
+      obj.胜利总分占比 = ((obj.分数 / 2196359829) * 100).toFixed(2);
       if (item.分数转移) {
         obj.分数 = 0;
       }
@@ -106,6 +107,11 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '分数排名占比',
       dataIndex: '分数排名占比',
+      valueType: 'text',
+    },
+    {
+      title: '胜利总分占比',
+      dataIndex: '胜利总分占比',
       valueType: 'text',
     },
   ];
