@@ -21,8 +21,13 @@ export default defineConfig({
     },
     {
       name: '联盟排名',
-      path: '/Alliance',
+      path: '/alliance',
       component: './Alliance',
+    },
+    {
+      name: '堡垒规则',
+      path: '/rules',
+      component: './Rules',
     },
   ],
   npmClient: 'pnpm',

@@ -30,12 +30,14 @@ function common(columns) {
   };
 }
 
+const 堡垒数据 = {
+  堡垒加速: {
+    上限: 10,
+    总数: 400,
+  },
+};
+
 const TableList: React.FC<unknown> = () => {
-  const 排名总分 = data.个人积分.reduce((pre, cur) => {
-    return {
-      分数: pre.分数 + cur.分数,
-    };
-  }).分数;
   const newData = data.个人积分
     .map((item, index, arr) => {
       const obj = { ...item, 原始分数: item.分数 };
@@ -44,12 +46,19 @@ const TableList: React.FC<unknown> = () => {
           obj.分数 = obj.分数 + item1.分数;
         }
       });
-      obj.分数国战占比 = ((obj.分数 / 2187660487) * 100).toFixed(2);
-      obj.分数排名占比 = ((obj.分数 / 排名总分) * 100).toFixed(2);
-      obj.胜利总分占比 = ((obj.分数 / 2196359829) * 100).toFixed(2);
       if (item.分数转移) {
         obj.分数 = 0;
       }
+      obj.国战总分占比 = ((obj.分数 / data.国战总分) * 100).toFixed(2);
+      obj.胜利总分占比 = ((obj.分数 / data.国战胜利方总分) * 100).toFixed(2);
+      if (obj.胜利总分占比 >= 1) {
+        obj.奖励档位 = 1;
+      } else if (obj.胜利总分占比 > 0.5 && obj.胜利总分占比 < 1) {
+        obj.奖励档位 = 2;
+      } else if (obj.胜利总分占比 > 0) {
+        obj.奖励档位 = 3;
+      }
+
       return obj;
     })
     .sort((a, b) => b.分数 - a.分数);
@@ -100,13 +109,8 @@ const TableList: React.FC<unknown> = () => {
       valueType: 'text',
     },
     {
-      title: '分数国战占比',
-      dataIndex: '分数国战占比',
-      valueType: 'text',
-    },
-    {
-      title: '分数排名占比',
-      dataIndex: '分数排名占比',
+      title: '国战总分占比',
+      dataIndex: '国战总分占比',
       valueType: 'text',
     },
     {
@@ -114,7 +118,36 @@ const TableList: React.FC<unknown> = () => {
       dataIndex: '胜利总分占比',
       valueType: 'text',
     },
+    {
+      title: '奖励档位',
+      dataIndex: '奖励档位',
+      filters: true,
+      onFilter: true,
+      valueType: 'select',
+      valueEnum: {
+        1: { text: '1' },
+        2: { text: '2' },
+        3: { text: '3' },
+      },
+    },
+    ...Object.keys(堡垒数据).map((item) => {
+      const obj = {
+        title: item,
+        dataIndex: item,
+        valueType: 'text',
+        render: (_, item1) => {
+          if (item1.奖励档位) {
+            const 分配数量 = Math.floor(
+              堡垒数据[item].上限 / 2 ** (item1.奖励档位 - 1),
+            );
+            return 分配数量;
+          }
+        },
+      };
+      return obj;
+    }),
   ];
+
   return (
     <PageContainer
       header={{

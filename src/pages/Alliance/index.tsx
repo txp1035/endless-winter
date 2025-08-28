@@ -40,8 +40,7 @@ const TableList: React.FC<unknown> = () => {
     .map((item) => {
       const 占比 = ((item.分数 / 排名总分) * 100).toFixed(2);
       console.log(排名总分);
-      const obj = { ...item, 占比 };
-
+      const obj = { ...item, 占比: (Number(占比) / 100) * 8 * 15 };
       return obj;
     })
     .sort((a, b) => b.分数 - a.分数);
