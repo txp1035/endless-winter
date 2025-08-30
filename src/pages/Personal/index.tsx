@@ -65,6 +65,24 @@ const 堡垒数据 = {
   },
 };
 
+const obj = Object.keys(堡垒数据).map((item) => {
+  const obj = {
+    title: item,
+    dataIndex: item,
+    valueType: 'text',
+    render: (_, item1) => {
+      if (item1.奖励档位) {
+        const 分配数量 = Math.floor(
+          堡垒数据[item].上限 / 2 ** (item1.奖励档位 - 1),
+        );
+        return 分配数量;
+      }
+    },
+  };
+  return obj;
+});
+console.log(obj);
+
 const TableList: React.FC<unknown> = () => {
   const newData = data.个人积分
     .map((item, index, arr) => {
@@ -158,22 +176,6 @@ const TableList: React.FC<unknown> = () => {
         3: { text: '3' },
       },
     },
-    ...Object.keys(堡垒数据).map((item) => {
-      const obj = {
-        title: item,
-        dataIndex: item,
-        valueType: 'text',
-        render: (_, item1) => {
-          if (item1.奖励档位) {
-            const 分配数量 = Math.floor(
-              堡垒数据[item].上限 / 2 ** (item1.奖励档位 - 1),
-            );
-            return 分配数量;
-          }
-        },
-      };
-      return obj;
-    }),
   ];
 
   return (
