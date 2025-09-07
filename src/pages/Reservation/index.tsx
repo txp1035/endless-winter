@@ -1,10 +1,11 @@
-import { getInfo } from '@/utils/leancloud';
+import { deleteInfo, getInfo } from '@/utils/leancloud';
 import type { ActionType } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
+import { Modal } from 'antd';
 import React, { useRef } from 'react';
 import Form from './Form';
 
@@ -31,62 +32,37 @@ function common(columns) {
   };
 }
 
-const 堡垒数据 = {
-  堡垒加速: {
-    上限: 10,
-    总数: 400,
-  },
-  堡垒大药: {
-    上限: 2,
-    总数: 60,
-  },
-  堡垒茉莉: {
-    上限: 10,
-    总数: 200,
-  },
-  堡垒高迁: {
-    上限: 4,
-    总数: 90,
-  },
-  要塞火晶: {
-    上限: 20,
-    总数: 600,
-  },
-  要塞宠物: {
-    上限: 3,
-    总数: 100,
-  },
-  要塞老头: {
-    上限: 15,
-    总数: 420,
-  },
-  要塞装备: {
-    上限: 5,
-    总数: 150,
-  },
-};
-
-const obj = Object.keys(堡垒数据).map((item) => {
-  const obj = {
-    title: item,
-    dataIndex: item,
-    valueType: 'text',
-    render: (_, item1) => {
-      if (item1.奖励档位) {
-        const 分配数量 = Math.floor(
-          堡垒数据[item].上限 / 2 ** (item1.奖励档位 - 1),
-        );
-        return 分配数量;
-      }
-    },
-  };
-  return obj;
-});
-console.log(obj);
-
 const TableList: React.FC<unknown> = () => {
   const actionRef = useRef<ActionType>();
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
+    {
+      title: '数量',
+      valueType: 'index',
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      key: 'option',
+      width: 200,
+      render: (text, record, _, action) => [
+        <Form type="edit" actionRef={actionRef} info={record} />,
+        <a
+          key="view"
+          onClick={() => {
+            Modal.confirm({
+              title: '是否删除',
+              content: `${record.name}的预约`,
+              onOk: async () => {
+                await deleteInfo(record.id);
+                actionRef.current?.reload();
+              },
+            });
+          }}
+        >
+          删除
+        </a>,
+      ],
+    },
     {
       title: '游戏名',
       dataIndex: 'name',
@@ -95,11 +71,14 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '预约类型',
       dataIndex: 'type',
-      width: 250,
+      width: 300,
+      filters: true,
+      onFilter: true,
+      valueType: 'select',
       valueEnum: {
-        1: { text: '副执政（火晶）' },
-        2: { text: '副执政（研究加速）' },
-        3: { text: '教育部长（练兵加速）' },
+        1: { text: '副执政-火晶' },
+        2: { text: '副执政-研究加速' },
+        3: { text: '教育部长-练兵加速' },
       },
     },
     {
@@ -109,10 +88,9 @@ const TableList: React.FC<unknown> = () => {
     },
     {
       title: '预约时间',
-
       dataIndex: 'time',
-      render: (_, a) => {
-        return String(a.time);
+      render: (_, record) => {
+        return String(record.time);
       },
     },
   ];
@@ -127,7 +105,7 @@ const TableList: React.FC<unknown> = () => {
         actionRef={actionRef}
         pagination={false}
         search={false}
-        toolBarRender={() => [<Form actionRef={actionRef} />]}
+        toolBarRender={() => [<Form type="add" actionRef={actionRef} />]}
         request={async (params, sort, filter) => {
           const res = await getInfo();
           return { data: res };

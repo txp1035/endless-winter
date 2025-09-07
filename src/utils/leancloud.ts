@@ -5,10 +5,19 @@ AV.init({
   appKey: 'd8mo4kKbUipfXgSMNE0c6VBf',
   serverURL: 'https://rugr0gia.lc-cn-n1-shared.com',
 });
+export const deleteInfo = async (id) => {
+  const todo = AV.Object.createWithoutData('wjdr', id);
+  await todo.destroy();
+};
 export const getInfo = async () => {
   const query = new AV.Query('wjdr');
   const list = await query.descending('createdAt').find();
-  return list.map((item) => item._serverData);
+  return list.map((item) => ({
+    ...item._serverData,
+    id: item.id,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  }));
 };
 let reupload = 0;
 export const saveInfo = async (obj: {
@@ -37,4 +46,20 @@ export const saveInfo = async (obj: {
       throw new Error(error);
     }
   }
+};
+export const editInfo = async (obj: {
+  id: string;
+  name: string;
+  number: number;
+  time: number[];
+  type: number;
+}) => {
+  console.log(123, obj);
+  const { name, number, time, type, id } = obj;
+  const todo = AV.Object.createWithoutData('wjdr', id);
+  todo.set('name', name);
+  todo.set('number', number);
+  todo.set('time', time);
+  todo.set('type', type);
+  await todo.save();
 };
