@@ -35,8 +35,8 @@ export default ({ actionRef }) => {
       title="新建预约"
       initialValues={{
         time: [
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-          21, 22, 23, 24,
+          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23,
         ],
       }}
       resize={{
@@ -103,8 +103,8 @@ export default ({ actionRef }) => {
         />
         <ProFormSelect
           options={Array.from({ length: 24 }, (_, index) => ({
-            value: index + 1,
-            label: `${index + 1}点`,
+            value: index,
+            label: `${index}点`,
           }))}
           mode="multiple"
           width={220}
