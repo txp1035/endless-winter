@@ -26,7 +26,6 @@ export const saveInfo = async (obj: {
   time: number[];
   type: number;
 }) => {
-  console.log(222, obj);
   const { name, number, time, type } = obj;
   const Miru = AV.Object.extend('wjdr');
   const miru = new Miru();
@@ -47,19 +46,11 @@ export const saveInfo = async (obj: {
     }
   }
 };
-export const editInfo = async (obj: {
-  id: string;
-  name: string;
-  number: number;
-  time: number[];
-  type: number;
-}) => {
-  console.log(123, obj);
-  const { name, number, time, type, id } = obj;
+export const editInfo = async (obj: { id: string }) => {
+  const { id, ...rest } = obj;
   const todo = AV.Object.createWithoutData('wjdr', id);
-  todo.set('name', name);
-  todo.set('number', number);
-  todo.set('time', time);
-  todo.set('type', type);
+  Object.entries(rest).forEach(([key, value]) => {
+    todo.set(key, value);
+  });
   await todo.save();
 };

@@ -9,6 +9,27 @@ import { Modal } from 'antd';
 import React, { useRef } from 'react';
 import Form from './Form';
 
+const isDev = false;
+
+function calculateTime(list) {
+  const timeList = [];
+  const newList = list.map((item) => {
+    const obj = { ...item, actualTime: -1 };
+    for (let index = 0; index < item.time.length; index++) {
+      const element = item.time[index];
+      const newList = timeList.filter((item) => item === element);
+      if (newList.length < 2) {
+        timeList.push(element);
+        obj.actualTime = element;
+        break;
+      }
+    }
+
+    return obj;
+  });
+  return newList;
+}
+
 function common(columns) {
   const width = columns
     .map((item) => item.width || 100)
@@ -76,15 +97,22 @@ const TableList: React.FC<unknown> = () => {
       onFilter: true,
       valueType: 'select',
       valueEnum: {
-        1: { text: '副执政-火晶' },
-        2: { text: '副执政-研究加速' },
-        3: { text: '教育部长-练兵加速' },
+        1: { text: '副执政-火晶（周一）' },
+        2: { text: '副执政-研究加速（周五）' },
+        3: { text: '教育部长-练兵加速（周四）' },
       },
     },
     {
       title: '材料数量',
       width: 200,
       dataIndex: 'number',
+    },
+    {
+      title: '实际时间',
+      dataIndex: 'actualTime',
+      render: (_, record) => {
+        return record.actualTime === -1 ? '没有匹配' : record.actualTime;
+      },
     },
     {
       title: '预约时间',
@@ -105,10 +133,41 @@ const TableList: React.FC<unknown> = () => {
         actionRef={actionRef}
         pagination={false}
         search={false}
-        toolBarRender={() => [<Form type="add" actionRef={actionRef} />]}
+        toolBarRender={() => [
+          <Form type="add" actionRef={actionRef} />,
+          isDev && (
+            <Button
+              type="primary"
+              onClick={async () => {
+                const res = await getInfo();
+                console.log(res);
+                const data = res.sort((a, b) => b.number - a.number);
+                const newData = calculateTime(
+                  data.filter((item) => item.type === 1),
+                );
+
+                for (let index = 0; index < newData.length; index++) {
+                  const element = newData[index];
+                  await editInfo({
+                    id: element.id,
+                    actualTime: element.actualTime,
+                  });
+                }
+                Modal.info({ title: '更新成功' });
+              }}
+            >
+              生成建筑预约时间
+            </Button>
+          ),
+        ]}
         request={async (params, sort, filter) => {
           const res = await getInfo();
-          return { data: res };
+          console.log(res);
+          const data = res.sort((a, b) => b.number - a.number);
+          const newData = calculateTime(
+            data.filter((item) => item.type === 1),
+          ).sort((a, b) => b.actualTime - a.actualTime);
+          return { data: data };
         }}
         columns={columns}
         {...common(columns)}

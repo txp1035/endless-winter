@@ -9,7 +9,6 @@ import { Button, Drawer, Form, message } from 'antd';
 import { useState } from 'react';
 
 export default ({ actionRef, type, info }) => {
-  console.log(info);
   const [open, setOpen] = useState(false);
   const text = { edit: '编辑', add: '新建预约' };
   const btnType = { edit: 'link', add: 'primary' };
