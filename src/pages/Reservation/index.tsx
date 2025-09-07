@@ -1,9 +1,11 @@
+import { getInfo } from '@/utils/leancloud';
+import type { ActionType } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import Form from './Form';
 
 function common(columns) {
@@ -83,25 +85,23 @@ const obj = Object.keys(堡垒数据).map((item) => {
 console.log(obj);
 
 const TableList: React.FC<unknown> = () => {
-  const newData = [];
-  const [dataSource, setDataSource] = useState(newData);
+  const actionRef = useRef<ActionType>();
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
       title: '游戏名',
-      valueType: 'index',
+      dataIndex: 'name',
     },
     {
       title: '预约类型',
-      dataIndex: '预约类型',
+      dataIndex: 'type',
     },
     {
       title: '材料数量',
-      dataIndex: '材料数量',
+      dataIndex: 'number',
     },
     {
       title: '预约时间',
-      dataIndex: '预约时间',
-      valueType: 'text',
+      dataIndex: 'time',
     },
   ];
 
@@ -112,10 +112,14 @@ const TableList: React.FC<unknown> = () => {
       }}
     >
       <ProTable<API.UserInfo>
+        actionRef={actionRef}
         pagination={false}
         search={false}
-        toolBarRender={() => [<Form />]}
-        dataSource={dataSource}
+        toolBarRender={() => [<Form actionRef={actionRef} />]}
+        request={async (params, sort, filter) => {
+          const res = await getInfo();
+          return { data: res };
+        }}
         columns={columns}
         {...common(columns)}
       />
