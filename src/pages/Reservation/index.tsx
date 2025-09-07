@@ -90,18 +90,30 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '游戏名',
       dataIndex: 'name',
+      width: 200,
     },
     {
       title: '预约类型',
       dataIndex: 'type',
+      width: 250,
+      valueEnum: {
+        1: { text: '副执政（火晶）' },
+        2: { text: '副执政（研究加速）' },
+        3: { text: '教育部长（练兵加速）' },
+      },
     },
     {
       title: '材料数量',
+      width: 200,
       dataIndex: 'number',
     },
     {
       title: '预约时间',
+
       dataIndex: 'time',
+      render: (_, a) => {
+        return String(a.time);
+      },
     },
   ];
 
