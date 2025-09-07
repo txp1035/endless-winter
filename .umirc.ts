@@ -25,6 +25,11 @@ export default defineConfig({
       component: './Alliance',
     },
     {
+      name: '国战预约',
+      path: '/teservation',
+      component: './Reservation',
+    },
+    {
       name: '堡垒规则',
       path: '/rules',
       component: './Rules',
