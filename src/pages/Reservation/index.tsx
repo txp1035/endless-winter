@@ -1,11 +1,11 @@
-import { deleteInfo, getInfo } from '@/utils/leancloud';
+import { deleteInfo, editInfo, getInfo } from '@/utils/leancloud';
 import type { ActionType } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import React, { useRef } from 'react';
 import Form from './Form';
 
@@ -121,6 +121,18 @@ const TableList: React.FC<unknown> = () => {
         return String(record.time);
       },
     },
+    {
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      width: 120,
+      valueType: 'dateTime',
+    },
+    {
+      title: '修改时间',
+      dataIndex: 'updatedAt',
+      width: 120,
+      valueType: 'dateTime',
+    },
   ];
 
   return (
@@ -143,7 +155,7 @@ const TableList: React.FC<unknown> = () => {
                 console.log(res);
                 const data = res.sort((a, b) => b.number - a.number);
                 const newData = calculateTime(
-                  data.filter((item) => item.type === 1),
+                  data.filter((item) => item.type === 2),
                 );
 
                 for (let index = 0; index < newData.length; index++) {
@@ -165,8 +177,8 @@ const TableList: React.FC<unknown> = () => {
           console.log(res);
           const data = res.sort((a, b) => b.number - a.number);
           const newData = calculateTime(
-            data.filter((item) => item.type === 1),
-          ).sort((a, b) => b.actualTime - a.actualTime);
+            data.filter((item) => item.type === 2),
+          ).sort((a, b) => a.actualTime - b.actualTime);
           return { data: data };
         }}
         columns={columns}
