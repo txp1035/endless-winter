@@ -175,6 +175,7 @@ const TableList: React.FC<unknown> = () => {
         2: { text: '2' },
         3: { text: '3' },
       },
+      render: () => '待计算',
     },
   ];
 
