@@ -105,7 +105,6 @@ const TableList: React.FC<unknown> = () => {
       }
       obj.国战总分占比 = ((obj.分数 / data.国战总分) * 100).toFixed(2);
       obj.胜利总分占比 = ((obj.分数 / data.国战胜利方总分) * 100).toFixed(2);
-
       return obj;
     })
 
@@ -122,9 +121,10 @@ const TableList: React.FC<unknown> = () => {
       ).toFixed(2);
       console.log(arr[99]);
       const 档位阶段 = (第一名分数占比 - 最后一名分数占比) / 3;
+      console.log(档位阶段);
       const 一档 = 第一名分数占比 - 档位阶段;
       const 二档 = 第一名分数占比 - 2 * 档位阶段;
-      const 三档 = 第一名分数占比 - 3 * 档位阶段;
+      const 三档 = 最后一名分数占比;
       if (obj.胜利总分占比 >= 一档) {
         obj.奖励档位 = 1;
       } else if (obj.胜利总分占比 >= 二档 && obj.胜利总分占比 < 一档) {
