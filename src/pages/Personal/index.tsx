@@ -47,6 +47,14 @@ const 堡垒数据 = {
     上限: 4,
     总数: 90,
   },
+  堡垒螺丝: {
+    上限: 0,
+    总数: 500,
+  },
+  堡垒洗练石: {
+    上限: 0,
+    总数: 600,
+  },
   要塞火晶: {
     上限: 20,
     总数: 600,
@@ -97,17 +105,35 @@ const TableList: React.FC<unknown> = () => {
       }
       obj.国战总分占比 = ((obj.分数 / data.国战总分) * 100).toFixed(2);
       obj.胜利总分占比 = ((obj.分数 / data.国战胜利方总分) * 100).toFixed(2);
-      if (obj.胜利总分占比 >= 1) {
-        obj.奖励档位 = 1;
-      } else if (obj.胜利总分占比 > 0.5 && obj.胜利总分占比 < 1) {
-        obj.奖励档位 = 2;
-      } else if (obj.胜利总分占比 > 0) {
-        obj.奖励档位 = 3;
-      }
 
       return obj;
     })
-    .sort((a, b) => b.分数 - a.分数);
+
+    .sort((a, b) => b.分数 - a.分数)
+    .map((item, index, arr) => {
+      const obj = { ...item };
+      const 第一名分数占比 = (
+        (arr[0].分数 / data.国战胜利方总分) *
+        100
+      ).toFixed(2);
+      const 最后一名分数占比 = (
+        (arr[99].分数 / data.国战胜利方总分) *
+        100
+      ).toFixed(2);
+      console.log(arr[99]);
+      const 档位阶段 = (第一名分数占比 - 最后一名分数占比) / 3;
+      const 一档 = 第一名分数占比 - 档位阶段;
+      const 二档 = 第一名分数占比 - 2 * 档位阶段;
+      const 三档 = 第一名分数占比 - 3 * 档位阶段;
+      if (obj.胜利总分占比 >= 一档) {
+        obj.奖励档位 = 1;
+      } else if (obj.胜利总分占比 >= 二档 && obj.胜利总分占比 < 一档) {
+        obj.奖励档位 = 2;
+      } else if (obj.胜利总分占比 >= 三档) {
+        obj.奖励档位 = 3;
+      }
+      return obj;
+    });
   const [dataSource, setDataSource] = useState(newData);
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
@@ -128,9 +154,9 @@ const TableList: React.FC<unknown> = () => {
         520: { text: '520' },
         qqq: { text: 'qqq' },
         one: { text: 'one' },
-        no2: { text: 'no2' },
         avn: { text: 'avn' },
         kkk: { text: 'kkk' },
+        no2: { text: '996' },
       },
     },
     {
@@ -175,7 +201,6 @@ const TableList: React.FC<unknown> = () => {
         2: { text: '2' },
         3: { text: '3' },
       },
-      render: () => '待计算',
     },
   ];
 
