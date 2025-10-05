@@ -67,7 +67,7 @@ export default ({ actionRef, type, info }) => {
               <ProFormText
                 name="name"
                 width={220}
-                label="游戏名称"
+                label="你的游戏呢称"
                 placeholder="请输入名称"
                 rules={[{ required: true, message: '这是必填项' }]}
               />
