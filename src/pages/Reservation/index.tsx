@@ -57,8 +57,9 @@ const TableList: React.FC<unknown> = () => {
   const actionRef = useRef<ActionType>();
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
-      title: '数量',
+      title: '顺序',
       valueType: 'index',
+      width: 50,
     },
     {
       title: '操作',
@@ -109,6 +110,7 @@ const TableList: React.FC<unknown> = () => {
     },
     {
       title: '实际时间',
+      width: 90,
       dataIndex: 'actualTime',
       render: (_, record) => {
         return record.actualTime === -1 ? '没有匹配' : record.actualTime;

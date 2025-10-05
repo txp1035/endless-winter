@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 export default ({ actionRef, type, info }) => {
   const [open, setOpen] = useState(false);
+  const [infos, setInfos] = useState('无');
   const text = { edit: '编辑', add: '新建预约' };
   const btnType = { edit: 'link', add: 'primary' };
   const initialValues = {
@@ -88,10 +89,29 @@ export default ({ actionRef, type, info }) => {
                 width={220}
                 name="type"
                 label="预约类型"
+                onChange={(key) => {
+                  const s = '材料数量请填写';
+                  switch (key) {
+                    case 1:
+                      setInfos(s + '打算使用的火晶数量');
+                      break;
+                    case 2:
+                      setInfos(s + '打算研究的分钟数（包含通用）');
+                      break;
+                    case 3:
+                      setInfos(s + '打算练兵的分钟数（包含通用）');
+                      break;
+                    default:
+                      break;
+                  }
+                }}
                 rules={[{ required: true, message: '这是必填项' }]}
               />
+            </ProForm.Group>
+            {infos}
+            <ProForm.Group>
               <ProFormDigit
-                label="材料数量（分钟/个）"
+                label="材料数量"
                 name="number"
                 min={1}
                 fieldProps={{ precision: 0 }}
@@ -105,7 +125,14 @@ export default ({ actionRef, type, info }) => {
                 mode="multiple"
                 width={220}
                 name="time"
-                label="预约时间（不方便的时间取消掉）"
+                label={
+                  <div>
+                    <div>预约时间</div>
+                    <div style={{ color: 'gray' }}>
+                      默认全天时间段，没空的时间点可以点×取消掉
+                    </div>
+                  </div>
+                }
                 rules={[{ required: true, message: '这是必填项' }]}
               />
             </ProForm.Group>

@@ -40,7 +40,11 @@ const TableList: React.FC<unknown> = () => {
     .map((item) => {
       const 占比 = ((item.分数 / 排名总分) * 100).toFixed(2);
       console.log(排名总分);
-      const obj = { ...item, 占比: (Number(占比) / 100) * 8 * 15 };
+      const obj = {
+        ...item,
+        占比,
+        堡垒人数: Math.floor((Number(占比) * 10) / 100),
+      };
       return obj;
     })
     .sort((a, b) => b.分数 - a.分数);
@@ -67,6 +71,11 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '占比',
       dataIndex: '占比',
+      valueType: 'text',
+    },
+    {
+      title: '堡垒人数',
+      dataIndex: '堡垒人数',
       valueType: 'text',
     },
   ];
