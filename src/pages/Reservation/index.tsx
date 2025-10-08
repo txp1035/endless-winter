@@ -131,13 +131,24 @@ const TableList: React.FC<unknown> = () => {
       width: 200,
     },
     {
+      title: '预约类型',
+      dataIndex: 'type',
+      width: 120,
+      valueType: 'select',
+      valueEnum: {
+        1: { text: '建筑加速' },
+        2: { text: '研究加速' },
+        3: { text: '练兵加速' },
+      },
+    },
+    {
       title: `材料数量(${tabList === '1' ? '个' : '分钟'})`,
       width: 200,
       dataIndex: 'number',
     },
     {
       title: '实际时间',
-      width: 100,
+      width: 120,
       dataIndex: 'actualTime',
       render: (_, record) => {
         return record.actualTime === -1 ? '没有匹配' : record.actualTime;
