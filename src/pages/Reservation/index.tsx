@@ -131,20 +131,7 @@ const TableList: React.FC<unknown> = () => {
       width: 200,
     },
     {
-      title: '预约类型',
-      dataIndex: 'type',
-      width: 300,
-      filters: true,
-      onFilter: true,
-      valueType: 'select',
-      valueEnum: {
-        1: { text: '副执政-火晶（周一）' },
-        2: { text: '副执政-研究加速（周五）' },
-        3: { text: '教育部长-练兵加速（周四）' },
-      },
-    },
-    {
-      title: '材料数量',
+      title: `材料数量(${tabList === '1' ? '个' : '分钟'})`,
       width: 200,
       dataIndex: 'number',
     },
