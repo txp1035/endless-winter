@@ -20,6 +20,11 @@ export default defineConfig({
       component: './Personal',
     },
     {
+      name: '521',
+      path: '/521',
+      component: './521',
+    },
+    {
       name: '联盟排名',
       path: '/alliance',
       component: './Alliance',
