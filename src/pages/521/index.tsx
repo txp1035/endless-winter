@@ -32,7 +32,7 @@ const dynamicColumns = Object.keys(data).map((item) => {
                 {Object.entries(dom).map(([key, value]) => {
                   return (
                     <div>
-                      {key}-{value}
+                      {key}：{value}
                     </div>
                   );
                 })}
@@ -98,7 +98,30 @@ const newData = Object.entries(objData)
     }, 0);
     return { 名字: key, ...value, 总积分 };
   })
-  .sort((a, b) => b.总积分 - a.总积分);
+  .sort((a, b) => b.总积分 - a.总积分)
+  .map((item, index, arr) => {
+    const obj = { ...item };
+    const 第一名积分 = arr[0].总积分;
+
+    // const 一档 = 第一名分数占比 - 2 * 档位阶段;
+    // const 二档 = 第一名分数占比 - 4 * 档位阶段;
+    // const 三档 = 最后一名分数占比;
+    const 一档 = 第一名积分 / 2;
+    const 二档 = 第一名积分 / 4;
+    const 三档 = 第一名积分 / 8;
+    const 四档 = 第一名积分 / 16;
+    console.log(一档, 二档, 三档);
+    if (obj.总积分 >= 一档) {
+      obj.档位 = 1;
+    } else if (obj.总积分 >= 二档 && obj.总积分 < 一档) {
+      obj.档位 = 2;
+    } else if (obj.总积分 >= 三档 && obj.总积分 < 二档) {
+      obj.档位 = 3;
+    } else if (obj.总积分 >= 四档 && obj.总积分 < 三档) {
+      obj.档位 = 4;
+    }
+    return obj;
+  });
 
 function common(columns) {
   const width = columns
@@ -208,6 +231,12 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '总积分',
       dataIndex: '总积分',
+      valueType: 'text',
+      width: 100,
+    },
+    {
+      title: '档位',
+      dataIndex: '档位',
       valueType: 'text',
     },
   ];
