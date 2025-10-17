@@ -6,6 +6,14 @@ import {
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import data from './data.json';
+import data1 from './基础数据.json';
+const a = Object.entries(data1).map(([key, value]) => {
+  const values = Object.entries(value).map(([key1, value1], index, arr) => {
+    return key1 + '-' + (value1 / arr[0][1]).toFixed(3);
+  });
+  return values + '     ' + key;
+});
+console.log(a, 333);
 
 // 动态列，名字，积分排名
 
@@ -14,11 +22,10 @@ const dynamicColumns = Object.keys(data).map((item) => {
     title: item + '积分',
     dataIndex: item,
     valueType: 'text',
-    width: 200,
+    width: 150,
     render(dom) {
       return (
         <div>
-          {dom.积分}
           <Tooltip
             title={
               <div>
@@ -34,13 +41,14 @@ const dynamicColumns = Object.keys(data).map((item) => {
           >
             <a>详情</a>
           </Tooltip>
+          <span style={{ marginLeft: 10 }}>{dom.积分}</span>
         </div>
       );
     },
   };
 });
 
-function processFractionData(data) {
+function processFractionData(data, baseNumber) {
   return data
     .map((item, index, arr) => {
       const obj = { ...item, 原始分数: item.分数 };
@@ -58,14 +66,22 @@ function processFractionData(data) {
     .map((item, index, arr) => {
       const obj = { ...item };
       const 第一名分数 = arr[0].分数;
-      obj.积分 = Number(((obj.分数 / 第一名分数) * 10).toFixed(2));
+      console.log(obj, 2223);
+      obj.积分 = Number((obj.分数 / baseNumber).toFixed(2));
       return obj;
     });
 }
 const objData = {};
 
 Object.entries(data).forEach(([key, value]) => {
-  processFractionData(value).forEach(({ 名字, ...element }) => {
+  let 基数 = 1;
+  if (key.includes('国战')) {
+    基数 = 2000 * 3000;
+  } else if (key.includes('大作战')) {
+    基数 = 1250 * 3000;
+  }
+
+  processFractionData(value, 基数).forEach(({ 名字, ...element }) => {
     if (objData[名字]) {
       objData[名字][key] = element;
     } else {
@@ -83,7 +99,6 @@ const newData = Object.entries(objData)
     return { 名字: key, ...value, 总积分 };
   })
   .sort((a, b) => b.总积分 - a.总积分);
-console.log(newData, 123123);
 
 function common(columns) {
   const width = columns
