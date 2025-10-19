@@ -6,14 +6,22 @@ import {
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import data from './data.json';
-import data1 from './基础数据.json';
-const a = Object.entries(data1).map(([key, value]) => {
-  const values = Object.entries(value).map(([key1, value1], index, arr) => {
-    return key1 + '-' + (value1 / arr[0][1]).toFixed(3);
+import baseData from './基础数据.json';
+const baseDataSummary = Object.entries(baseData).reduce((pre, cur) => {
+  console.log(pre, 123);
+  const obj = {};
+  Object.entries(pre[1]).forEach(([key, value]) => {
+    obj[key] = value + cur[1][key];
   });
-  return values + '     ' + key;
-});
-console.log(a, 333);
+  return ['汇总', obj];
+})[1];
+
+// (([key, value]) => {
+//   const values = Object.entries(value).map(([key1, value1], index, arr) => {
+//     return key1 + '-' + (value1 / arr[0][1]).toFixed(3);
+//   });
+//   return values + '     ' + key;
+// });
 
 // 动态列，名字，积分排名
 
@@ -48,7 +56,7 @@ const dynamicColumns = Object.keys(data).map((item) => {
   };
 });
 
-function processFractionData(data, baseNumber) {
+function processFractionData(data, key) {
   return data
     .map((item, index, arr) => {
       const obj = { ...item, 原始分数: item.分数 };
@@ -65,23 +73,26 @@ function processFractionData(data, baseNumber) {
     .sort((a, b) => b.分数 - a.分数)
     .map((item, index, arr) => {
       const obj = { ...item };
-      const 第一名分数 = arr[0].分数;
-      console.log(obj, 2223);
-      obj.积分 = Number((obj.分数 / baseNumber).toFixed(2));
+      let 基数 = 6000000;
+      if (key.includes('国战')) {
+        obj.转换分数 = Number(
+          (obj.分数 / (baseDataSummary.国战 / baseDataSummary.国战)).toFixed(2),
+        );
+      } else if (key.includes('大作战')) {
+        obj.转换分数 = Number(
+          (obj.分数 / (baseDataSummary.大作战 / baseDataSummary.国战)).toFixed(
+            2,
+          ),
+        );
+      }
+      obj.积分 = Number((obj.转换分数 / 基数).toFixed(2));
       return obj;
     });
 }
 const objData = {};
 
 Object.entries(data).forEach(([key, value]) => {
-  let 基数 = 1;
-  if (key.includes('国战')) {
-    基数 = 2000 * 3000;
-  } else if (key.includes('大作战')) {
-    基数 = 1250 * 3000;
-  }
-
-  processFractionData(value, 基数).forEach(({ 名字, ...element }) => {
+  processFractionData(value, key).forEach(({ 名字, ...element }) => {
     if (objData[名字]) {
       objData[名字][key] = element;
     } else {
@@ -94,7 +105,7 @@ Object.entries(data).forEach(([key, value]) => {
 const newData = Object.entries(objData)
   .map(([key, value]) => {
     const 总积分 = Object.values(value).reduce((pre, cur) => {
-      return pre + cur.积分;
+      return Number((pre + cur.积分).toFixed(2));
     }, 0);
     return { 名字: key, ...value, 总积分 };
   })
@@ -102,7 +113,6 @@ const newData = Object.entries(objData)
   .map((item, index, arr) => {
     const obj = { ...item };
     const 第一名积分 = arr[0].总积分;
-
     // const 一档 = 第一名分数占比 - 2 * 档位阶段;
     // const 二档 = 第一名分数占比 - 4 * 档位阶段;
     // const 三档 = 最后一名分数占比;
@@ -248,6 +258,20 @@ const TableList: React.FC<unknown> = () => {
       }}
     >
       <ProTable<API.UserInfo>
+        title={() => (
+          <>
+            <h3>详情名词解释</h3>
+            <div>
+              分数：活动中该账号的实际分数+活动中其他账号（小号或者朋友号）的的实际分数
+            </div>
+            <div>排名：活动中的实际排名</div>
+            <div>原始分数：活动中该账号的实际分数</div>
+            <div>
+              转换分数：不同活动消耗材料得到的分数不同，这个分数保证每个活动消耗同样的材料得到一样的分数
+            </div>
+            <div>积分：转换分数/6000000，数字小方便看</div>
+          </>
+        )}
         pagination={false}
         search={false}
         dataSource={dataSource}
