@@ -39,7 +39,6 @@ const TableList: React.FC<unknown> = () => {
   const newData = data.联盟积分
     .map((item) => {
       const 占比 = ((item.分数 / 排名总分) * 100).toFixed(2);
-      console.log(排名总分);
       const obj = {
         ...item,
         占比,

@@ -8,7 +8,6 @@ import React, { useState } from 'react';
 import data from './data.json';
 import baseData from './基础数据.json';
 const baseDataSummary = Object.entries(baseData).reduce((pre, cur) => {
-  console.log(pre, 123);
   const obj = {};
   Object.entries(pre[1]).forEach(([key, value]) => {
     obj[key] = value + cur[1][key];
@@ -120,7 +119,6 @@ const newData = Object.entries(objData)
     const 二档 = 第一名积分 / 4;
     const 三档 = 第一名积分 / 8;
     const 四档 = 第一名积分 / 16;
-    console.log(一档, 二档, 三档);
     if (obj.总积分 >= 一档) {
       obj.档位 = 1;
     } else if (obj.总积分 >= 二档 && obj.总积分 < 一档) {
