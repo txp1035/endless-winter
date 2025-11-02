@@ -55,7 +55,7 @@ function common(columns) {
 }
 
 function getIsEdit(tabList) {
-  const 备战时间 = '20251006';
+  const 备战时间 = '20251103';
   const 当前时间 = +new Date();
   let isEdit = false;
   switch (tabList) {

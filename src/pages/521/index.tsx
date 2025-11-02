@@ -7,13 +7,27 @@ import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import data from './data.json';
 import baseData from './基础数据.json';
-const baseDataSummary = Object.entries(baseData).reduce((pre, cur) => {
-  const obj = {};
-  Object.entries(pre[1]).forEach(([key, value]) => {
-    obj[key] = value + cur[1][key];
-  });
-  return ['汇总', obj];
-})[1];
+const 大作战与国战 = Object.entries(baseData)
+  .filter((item) => item[1].大作战 !== 0)
+  .reduce((pre, cur) => {
+    const obj = {};
+    Object.entries(pre[1]).forEach(([key, value]) => {
+      obj[key] = value + cur[1][key];
+    });
+    return ['汇总', obj];
+  })[1];
+const 大作战与国战比例 = 大作战与国战.大作战 / 大作战与国战.国战;
+const 总动员与国战 = Object.entries(baseData)
+  .filter((item) => item[1].总动员 !== 0)
+  .reduce((pre, cur) => {
+    const obj = {};
+    Object.entries(pre[1]).forEach(([key, value]) => {
+      obj[key] = value + cur[1][key];
+    });
+    return ['汇总', obj];
+  })[1];
+const 总动员与国战比例 = 总动员与国战.总动员 / 总动员与国战.国战;
+console.log(总动员与国战, 总动员与国战比例);
 
 // (([key, value]) => {
 //   const values = Object.entries(value).map(([key1, value1], index, arr) => {
@@ -73,30 +87,28 @@ function processFractionData(data, key) {
     .map((item, index, arr) => {
       const obj = { ...item };
       let 基数 = 6000000;
+
       if (key.includes('国战')) {
-        obj.转换分数 = Number(
-          (obj.分数 / (baseDataSummary.国战 / baseDataSummary.国战)).toFixed(2),
-        );
+        obj.转换分数 = Number((obj.分数 / 1).toFixed(2));
       } else if (key.includes('大作战')) {
-        obj.转换分数 = Number(
-          (obj.分数 / (baseDataSummary.大作战 / baseDataSummary.国战)).toFixed(
-            2,
-          ),
-        );
+        obj.转换分数 = Number((obj.分数 / 大作战与国战比例).toFixed(2));
+      } else if (key.includes('总动员')) {
+        obj.转换分数 = Number((obj.分数 / 总动员与国战比例).toFixed(2));
       }
       obj.积分 = Number((obj.转换分数 / 基数).toFixed(2));
       return obj;
     });
 }
 const objData = {};
-
+console.log(objData, 222);
 Object.entries(data).forEach(([key, value]) => {
-  processFractionData(value, key).forEach(({ 名字, ...element }) => {
+  const newData = processFractionData(value, key);
+  console.log(newData, 123, key);
+  newData.forEach(({ 名字, ...element }) => {
     if (objData[名字]) {
       objData[名字][key] = element;
     } else {
       objData[名字] = {};
-      // objData[名字][key] = JSON.stringify(element);
       objData[名字][key] = element;
     }
   });
@@ -111,6 +123,27 @@ const newData = Object.entries(objData)
   .sort((a, b) => b.总积分 - a.总积分)
   .map((item, index, arr) => {
     const obj = { ...item };
+    const 小号组 = [
+      '五大大',
+      '尢北风',
+      '猫鱼二号',
+      '如影随形',
+      '007',
+      '冬天任务号',
+      '锤锤的锤',
+      '日落黄昏',
+      '迪迪小号',
+      '倒吊人',
+      '太阳丶',
+      '世界丶',
+    ];
+    if (小号组.includes(obj.名字)) {
+      obj.状态 = '小号';
+    }
+    const 退游组 = ['沈丿清风', '我的城堡'];
+    if (退游组.includes(obj.名字)) {
+      obj.状态 = '退游';
+    }
     const 第一名积分 = arr[0].总积分;
     // const 一档 = 第一名分数占比 - 2 * 档位阶段;
     // const 二档 = 第一名分数占比 - 4 * 档位阶段;
@@ -221,7 +254,13 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '排名',
       valueType: 'index',
-      width: 100,
+      width: 50,
+    },
+    {
+      title: '状态',
+      dataIndex: '状态',
+      valueType: 'text',
+      width: 50,
     },
     {
       title: '名字',
