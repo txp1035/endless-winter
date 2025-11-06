@@ -11,7 +11,7 @@ export const deleteInfo = async (id) => {
 };
 export const getInfo = async () => {
   const query = new AV.Query('wjdr');
-  const list = await query.descending('createdAt').find();
+  const list = await query.descending('createdAt').limit(1000).find();
   return list.map((item) => ({
     ...item._serverData,
     id: item.id,
