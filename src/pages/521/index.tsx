@@ -27,7 +27,6 @@ const 总动员与国战 = Object.entries(baseData)
     return ['汇总', obj];
   })[1];
 const 总动员与国战比例 = 总动员与国战.总动员 / 总动员与国战.国战;
-console.log(总动员与国战, 总动员与国战比例);
 
 // (([key, value]) => {
 //   const values = Object.entries(value).map(([key1, value1], index, arr) => {
@@ -76,6 +75,7 @@ function processFractionData(data, key) {
       arr.forEach((item1) => {
         if (item1.分数转移 === obj.名字) {
           obj.分数 = obj.分数 + item1.分数;
+          obj.分数来自 = (obj.分数来自 || '') + ' ' + item1.名字;
         }
       });
       if (item.分数转移) {
@@ -113,6 +113,7 @@ Object.entries(data).forEach(([key, value]) => {
     }
   });
 });
+const number = { 一档: 0, 二档: 0, 三档: 0, 四档: 0 };
 const newData = Object.entries(objData)
   .map(([key, value]) => {
     const 总积分 = Object.values(value).reduce((pre, cur) => {
@@ -137,6 +138,27 @@ const newData = Object.entries(objData)
       '太阳丶',
       '世界丶',
     ];
+    const 二盟 = [
+      '喵喵兔不乖',
+      '六眼飞鱼',
+      '荒天帝',
+      '晓雪满空山',
+      '情感释怀',
+      'Rainy night',
+      '多喝热水',
+      '十号',
+      '呜呼哀哉',
+      'GG Bond',
+      '请茶馆',
+      '你泡泡姐',
+      '八月老番薯',
+      'yyl',
+      '来根大青山',
+      '小鱼小虾',
+    ];
+    if (二盟.includes(obj.名字)) {
+      obj.状态 = '二盟';
+    }
     if (小号组.includes(obj.名字)) {
       obj.状态 = '小号';
     }
@@ -154,12 +176,16 @@ const newData = Object.entries(objData)
     const 四档 = 第一名积分 / 16;
     if (obj.总积分 >= 一档) {
       obj.档位 = 1;
+      number.一档 = number.一档 + 1;
     } else if (obj.总积分 >= 二档 && obj.总积分 < 一档) {
       obj.档位 = 2;
+      number.二档 = number.二档 + 1;
     } else if (obj.总积分 >= 三档 && obj.总积分 < 二档) {
       obj.档位 = 3;
+      number.三档 = number.三档 + 1;
     } else if (obj.总积分 >= 四档 && obj.总积分 < 三档) {
       obj.档位 = 4;
+      number.四档 = number.四档 + 1;
     }
     return obj;
   });
@@ -307,6 +333,16 @@ const TableList: React.FC<unknown> = () => {
               转换分数：不同活动消耗材料得到的分数不同，这个分数保证每个活动消耗同样的材料得到一样的分数
             </div>
             <div>积分：转换分数/6000000，数字小方便看</div>
+            <h3>档位数据</h3>
+            <div>
+              <span>一档: {number.一档} </span>
+              <span>二档: {number.二档} </span>
+              <span>三档: {number.三档} </span>
+              <span>四档: {number.四档} </span>
+              <span>
+                总数: {number.一档 + number.二档 + number.三档 + number.四档}{' '}
+              </span>
+            </div>
           </>
         )}
         pagination={false}
