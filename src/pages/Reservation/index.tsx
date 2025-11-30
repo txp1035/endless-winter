@@ -61,21 +61,21 @@ function getIsEdit(tabList) {
   switch (tabList) {
     case '1':
       const 研究加速填写截止时间 =
-        dayjs(备战时间).subtract(1, 'day').format('YYYYMMDD') + '20';
+        dayjs(备战时间).subtract(1, 'day').format('YYYYMMDD') + '23';
       if (+dayjs(研究加速填写截止时间) > 当前时间) {
         isEdit = true;
       }
       break;
     case '2':
       const 建筑加速填写截止时间 =
-        dayjs(备战时间).add(3, 'day').format('YYYYMMDD') + '20';
+        dayjs(备战时间).add(3, 'day').format('YYYYMMDD') + '23';
       if (+dayjs(建筑加速填写截止时间) > 当前时间) {
         isEdit = true;
       }
       break;
     case '3':
       const 练兵加速填写截止时间 =
-        dayjs(备战时间).add(2, 'day').format('YYYYMMDD') + '20';
+        dayjs(备战时间).add(2, 'day').format('YYYYMMDD') + '23';
       if (+dayjs(练兵加速填写截止时间) > 当前时间) {
         isEdit = true;
       }

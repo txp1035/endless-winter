@@ -5,12 +5,13 @@ import {
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Button, Drawer, Form, message } from 'antd';
+import { Button, Drawer, Form, Modal, message } from 'antd';
 import { useState } from 'react';
 
 export default ({ actionRef, type, info }) => {
   const [open, setOpen] = useState(false);
   const [infos, setInfos] = useState('无');
+  const [labels, setLabels] = useState('材料数量');
   const text = { edit: '编辑', add: '新建预约' };
   const btnType = { edit: 'link', add: 'primary' };
   const initialValues = {
@@ -48,19 +49,32 @@ export default ({ actionRef, type, info }) => {
             form={form}
             autoFocusFirstInput
             onFinish={async (values) => {
-              if (type === 'add') {
-                await saveInfo(values);
-                message.success('提交成功');
-              }
-              if (type === 'edit') {
-                await editInfo({ ...values, id: info.id });
-                message.success('提交成功');
-              }
+              async function submit() {
+                if (type === 'add') {
+                  await saveInfo(values);
+                  message.success('提交成功');
+                }
+                if (type === 'edit') {
+                  await editInfo({ ...values, id: info.id });
+                  message.success('提交成功');
+                }
 
-              // 不返回不会关闭弹框
-              actionRef?.current?.reload();
-              setOpen(false);
-              return true;
+                // 不返回不会关闭弹框
+                actionRef?.current?.reload();
+                setOpen(false);
+                return true;
+              }
+              if (values.time.length === 24) {
+                Modal.confirm({
+                  title: '你选择了全天有时间，可能会排到凌晨，是否确认预约？',
+                  onOk: () => {
+                    submit();
+                  },
+                  onCancel: () => {},
+                });
+              } else {
+                submit();
+              }
             }}
           >
             <ProForm.Group>
@@ -94,12 +108,15 @@ export default ({ actionRef, type, info }) => {
                   switch (key) {
                     case 1:
                       setInfos(s + '打算使用的火晶数量');
+                      setLabels('材料数量（单位-个）');
                       break;
                     case 2:
-                      setInfos(s + '打算研究的分钟数（包含通用）');
+                      setInfos(s + '打算研究的天数（包含通用）');
+                      setLabels('材料数量（单位-天）');
                       break;
                     case 3:
-                      setInfos(s + '打算练兵的分钟数（包含通用）');
+                      setInfos(s + '打算练兵的天数（包含通用）');
+                      setLabels('材料数量（单位-天）');
                       break;
                     default:
                       break;
@@ -111,7 +128,7 @@ export default ({ actionRef, type, info }) => {
             {infos}
             <ProForm.Group>
               <ProFormDigit
-                label="材料数量"
+                label={labels}
                 name="number"
                 min={1}
                 fieldProps={{ precision: 0 }}
