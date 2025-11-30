@@ -119,11 +119,14 @@ const newData = Object.entries(objData)
     const 总积分 = Object.values(value).reduce((pre, cur) => {
       return Number((pre + cur.积分).toFixed(2));
     }, 0);
-    return { 名字: key, ...value, 总积分 };
-  })
-  .sort((a, b) => b.总积分 - a.总积分)
-  .map((item, index, arr) => {
+    const item = { 名字: key, ...value, 总积分 };
     const obj = { ...item };
+    if (item['11月10日国战']) {
+      obj.状态 = item['11月10日国战'].联盟;
+    }
+    if (item['10月17日大作战']) {
+      obj.状态 = '521';
+    }
     const 小号组 = [
       '五大大',
       '尢北风',
@@ -157,15 +160,31 @@ const newData = Object.entries(objData)
       '小鱼小虾',
     ];
     if (二盟.includes(obj.名字)) {
-      obj.状态 = '二盟';
+      obj.状态 = 'KKK';
     }
     if (小号组.includes(obj.名字)) {
       obj.状态 = '小号';
     }
-    const 退游组 = ['沈丿清风', '我的城堡'];
+    const 退游组 = ['沈丿清风', '我的城堡', '毛毛有点胖'];
     if (退游组.includes(obj.名字)) {
       obj.状态 = '退游';
     }
+    const 退盟组 = [
+      '毛毛咬我了',
+      '子不语',
+      '呙哈哈',
+      'études op10',
+      'leonardo',
+    ];
+    if (退盟组.includes(obj.名字)) {
+      obj.状态 = '退盟';
+    }
+    return obj;
+  })
+  .sort((a, b) => b.总积分 - a.总积分)
+  .filter((item) => !['退游', '退盟', 'QQQ', 'AVN'].includes(item.状态))
+  .map((item, index, arr) => {
+    const obj = { ...item };
     const 第一名积分 = arr[0].总积分;
     // const 一档 = 第一名分数占比 - 2 * 档位阶段;
     // const 二档 = 第一名分数占比 - 4 * 档位阶段;

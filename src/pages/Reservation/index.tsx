@@ -1,4 +1,4 @@
-import { editInfo, getInfo } from '@/utils/leancloud';
+import { deleteInfo, editInfo, getInfo } from '@/utils/leancloud';
 import type { ActionType } from '@ant-design/pro-components';
 import {
   PageContainer,
@@ -55,7 +55,7 @@ function common(columns) {
 }
 
 function getIsEdit(tabList) {
-  const 备战时间 = '20251103';
+  const 备战时间 = '20251201';
   const 当前时间 = +new Date();
   let isEdit = false;
   switch (tabList) {
