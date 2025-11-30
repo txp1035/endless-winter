@@ -142,7 +142,7 @@ const TableList: React.FC<unknown> = () => {
       },
     },
     {
-      title: `材料数量(${tabList === '1' ? '个' : '分钟'})`,
+      title: `材料数量(${tabList === '1' ? '个' : '天'})`,
       width: 200,
       dataIndex: 'number',
     },
