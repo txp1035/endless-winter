@@ -75,7 +75,8 @@ function processFractionData(data, key) {
       arr.forEach((item1) => {
         if (item1.分数转移 === obj.名字) {
           obj.分数 = obj.分数 + item1.分数;
-          obj.分数来自 = (obj.分数来自 || '') + ' ' + item1.名字;
+          obj.分数来自 =
+            (obj.分数来自 || '') + ' ' + item1.名字 + '-' + item1.分数;
         }
       });
       if (item.分数转移) {
@@ -121,68 +122,9 @@ const newData = Object.entries(objData)
     }, 0);
     const item = { 名字: key, ...value, 总积分 };
     const obj = { ...item };
-    if (item['11月10日国战']) {
-      obj.状态 = item['11月10日国战'].联盟;
-    }
-    if (item['10月17日大作战']) {
-      obj.状态 = '521';
-    }
-    const 小号组 = [
-      '五大大',
-      '尢北风',
-      '猫鱼二号',
-      '如影随形',
-      '007',
-      '冬天任务号',
-      '锤锤的锤',
-      '日落黄昏',
-      '迪迪小号',
-      '倒吊人',
-      '太阳丶',
-      '世界丶',
-    ];
-    const 二盟 = [
-      '喵喵兔不乖',
-      '六眼飞鱼',
-      '荒天帝',
-      '晓雪满空山',
-      '情感释怀',
-      'Rainy night',
-      '多喝热水',
-      '十号',
-      '呜呼哀哉',
-      'GG Bond',
-      '请茶馆',
-      '你泡泡姐',
-      '八月老番薯',
-      'yyl',
-      '来根大青山',
-      '小鱼小虾',
-    ];
-    if (二盟.includes(obj.名字)) {
-      obj.状态 = 'KKK';
-    }
-    if (小号组.includes(obj.名字)) {
-      obj.状态 = '小号';
-    }
-    const 退游组 = ['沈丿清风', '我的城堡', '毛毛有点胖'];
-    if (退游组.includes(obj.名字)) {
-      obj.状态 = '退游';
-    }
-    const 退盟组 = [
-      '毛毛咬我了',
-      '子不语',
-      '呙哈哈',
-      'études op10',
-      'leonardo',
-    ];
-    if (退盟组.includes(obj.名字)) {
-      obj.状态 = '退盟';
-    }
     return obj;
   })
   .sort((a, b) => b.总积分 - a.总积分)
-  .filter((item) => !['退游', '退盟', 'QQQ', 'AVN'].includes(item.状态))
   .map((item, index, arr) => {
     const obj = { ...item };
     const 第一名积分 = arr[0].总积分;
@@ -299,12 +241,6 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '排名',
       valueType: 'index',
-      width: 50,
-    },
-    {
-      title: '状态',
-      dataIndex: '状态',
-      valueType: 'text',
       width: 50,
     },
     {
