@@ -5,7 +5,7 @@ import {
 } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import React, { useState } from 'react';
-import data from '../../utils/data1.json';
+import data from './data.json';
 
 function common(columns) {
   const width = columns
