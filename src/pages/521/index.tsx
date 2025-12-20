@@ -3,7 +3,7 @@ import {
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
-import { Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import data from './data.json';
 import baseData from './基础数据.json';
@@ -61,7 +61,9 @@ const dynamicColumns = Object.keys(data).map((item) => {
           >
             <a>详情</a>
           </Tooltip>
-          <span style={{ marginLeft: 10 }}>{dom.积分}</span>
+          <span style={{ marginLeft: 10 }}>
+            {(dom.组织 ? dom.组织 + ' ' : '') + (dom.积分 || '')}
+          </span>
         </div>
       );
     },
@@ -101,10 +103,8 @@ function processFractionData(data, key) {
     });
 }
 const objData = {};
-console.log(objData, 222);
 Object.entries(data).forEach(([key, value]) => {
   const newData = processFractionData(value, key);
-  console.log(newData, 123, key);
   newData.forEach(({ 名字, ...element }) => {
     if (objData[名字]) {
       objData[名字][key] = element;
@@ -151,6 +151,7 @@ const newData = Object.entries(objData)
     return obj;
   });
 
+console.log(newData);
 function common(columns) {
   const width = columns
     .map((item) => item.width || 100)
@@ -233,7 +234,6 @@ const obj = Object.keys(堡垒数据).map((item) => {
   };
   return obj;
 });
-console.log(obj);
 
 const TableList: React.FC<unknown> = () => {
   const [dataSource, setDataSource] = useState(newData);
@@ -298,8 +298,35 @@ const TableList: React.FC<unknown> = () => {
                 总数: {number.一档 + number.二档 + number.三档 + number.四档}{' '}
               </span>
             </div>
+            {(() => {
+              const 小榜 = [];
+              for (let index = 1; index < dataSource.length; index++) {
+                if (index > 40) {
+                  break;
+                }
+                const element = dataSource[index];
+              }
+
+              return <div>123</div>;
+            })()}
           </>
         )}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            onClick={() => {
+              const obj = {};
+              console.log(newData);
+              // newData.forEach((element) => {
+              //   const 最新的关键字 = '12月08日国战';
+              //   element[最新的关键字];
+              //   console.log(element);
+              // });
+            }}
+          >
+            按组织查看
+          </Button>,
+        ]}
         pagination={false}
         search={false}
         dataSource={dataSource}
