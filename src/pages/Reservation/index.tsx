@@ -178,9 +178,9 @@ const TableList: React.FC<unknown> = () => {
   return (
     <PageContainer
       tabList={[
-        { tab: '建筑加速（周一）', key: '1' },
-        { tab: '练兵加速（周四）', key: '3' },
-        { tab: '研究加速（周五）', key: '2' },
+        { tab: '建筑加速', key: '1' },
+        { tab: '练兵加速', key: '3' },
+        { tab: '研究加速', key: '2' },
       ]}
       tabActiveKey={tabList}
       tabProps={{
