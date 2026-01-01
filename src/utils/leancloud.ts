@@ -37,13 +37,8 @@ export const saveInfo = async (obj: {
     await miru.save();
     console.log('上传成功');
   } catch (error) {
-    reupload = reupload + 1;
     console.log('上传失败,重新上传中');
-    if (reupload < 30) {
-      await saveInfo(obj);
-    } else {
-      throw new Error(error);
-    }
+    throw new Error(error);
   }
 };
 export const editInfo = async (obj: { id: string }) => {

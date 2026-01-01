@@ -50,19 +50,32 @@ export default ({ actionRef, type, info }) => {
             autoFocusFirstInput
             onFinish={async (values) => {
               async function submit() {
-                if (type === 'add') {
-                  await saveInfo(values);
-                  message.success('提交成功');
+                try {
+                  if (type === 'add') {
+                    await saveInfo(values);
+                    message.success('提交成功');
+                  }
+                  if (type === 'edit') {
+                    await editInfo({ ...values, id: info.id });
+                    message.success('提交成功');
+                  }
+                  // 不返回不会关闭弹框
+                  actionRef?.current?.reload();
+                  setOpen(false);
+                  return true;
+                } catch (error) {
+                  console.log(error, 123);
+                  Modal.info({
+                    title: '提交出错，请重新提交或者截图联系管理员',
+                    content: (
+                      <div>
+                        <div>错误信息：</div>
+                        <div>{String(error)}</div>
+                      </div>
+                    ),
+                  });
+                  return false;
                 }
-                if (type === 'edit') {
-                  await editInfo({ ...values, id: info.id });
-                  message.success('提交成功');
-                }
-
-                // 不返回不会关闭弹框
-                actionRef?.current?.reload();
-                setOpen(false);
-                return true;
               }
               if (values.time.length === 24) {
                 Modal.confirm({
