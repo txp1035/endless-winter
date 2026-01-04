@@ -6,34 +6,29 @@ import {
 import { Button, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import data from './data.json';
-import baseData from './基础数据.json';
-const 大作战与国战 = Object.entries(baseData)
-  .filter((item) => item[1].大作战 !== 0)
-  .reduce((pre, cur) => {
-    const obj = {};
-    Object.entries(pre[1]).forEach(([key, value]) => {
-      obj[key] = value + cur[1][key];
-    });
-    return ['汇总', obj];
-  })[1];
-const 大作战与国战比例 = 大作战与国战.大作战 / 大作战与国战.国战;
-const 总动员与国战 = Object.entries(baseData)
-  .filter((item) => item[1].总动员 !== 0)
-  .reduce((pre, cur) => {
-    const obj = {};
-    Object.entries(pre[1]).forEach(([key, value]) => {
-      obj[key] = value + cur[1][key];
-    });
-    return ['汇总', obj];
-  })[1];
-const 总动员与国战比例 = 总动员与国战.总动员 / 总动员与国战.国战;
+import ListDetails from './榜单积分详情.json';
 
-// (([key, value]) => {
-//   const values = Object.entries(value).map(([key1, value1], index, arr) => {
-//     return key1 + '-' + (value1 / arr[0][1]).toFixed(3);
-//   });
-//   return values + '     ' + key;
-// });
+const 国战榜单积分详情 = ListDetails[0].最强王国;
+const 各榜单转换比例 = Object.fromEntries(
+  Object.entries(ListDetails[1]).map(([key, value]) => {
+    let 总比例分 = 0;
+    const newValue = Object.entries(value)
+      .filter(([key1, _]) => {
+        if (key1 in 国战榜单积分详情) {
+          return true;
+        }
+        return false;
+      })
+      .map(([key1, value1]) => {
+        // 返回的比例是国战比其他，要转换比例就是其他乘以这个转换比例
+        const 比例分 = Number((国战榜单积分详情[key1] / value1).toFixed(2));
+        总比例分 = 总比例分 + 比例分;
+        return [key1, 比例分];
+      });
+    const 平均比例分 = Number((总比例分 / newValue.length).toFixed(2));
+    return [key, { 详情: newValue, 平均比例分 }];
+  }),
+);
 
 // 动态列，名字，积分排名
 
@@ -97,15 +92,21 @@ function processFractionData(data, key) {
     .map((item, index, arr) => {
       const obj = { ...item };
       let 基数 = 6000000;
-
+      obj.分数 = obj.分数 || 0;
+      obj.转换分数 = 0;
       if (key.includes('国战')) {
-        obj.转换分数 = Number((obj.分数 / 1).toFixed(2));
-      } else if (key.includes('大作战')) {
-        obj.转换分数 = Number((obj.分数 / 大作战与国战比例).toFixed(2));
-      } else if (key.includes('总动员')) {
-        obj.转换分数 = Number((obj.分数 / 总动员与国战比例).toFixed(2));
-      } else {
-        obj.转换分数 = 0;
+        obj.转换分数 = obj.分数;
+      }
+      const list = Object.keys(ListDetails[1]);
+      for (let index = 0; index < list.length; index++) {
+        const element = list[index];
+
+        if (key.includes(element)) {
+          obj.转换分数 = Number(
+            (obj.分数 * 各榜单转换比例[element].平均比例分).toFixed(2),
+          );
+          break;
+        }
       }
       obj.积分 = Number((obj.转换分数 / 基数).toFixed(2));
       return obj;
@@ -124,12 +125,31 @@ Object.entries(data).forEach(([key, value]) => {
   });
 });
 const number = { 一档: 0, 二档: 0, 三档: 0, 四档: 0 };
+
 const newData = Object.entries(objData)
   .map(([key, value]) => {
-    const 总积分 = Object.values(value).reduce((pre, cur) => {
-      return Number((pre + cur.积分).toFixed(2));
-    }, 0);
-    const item = { 名字: key, ...value, 总积分 };
+    const 总积分 = Object.entries(value)
+      .filter((item) => {
+        if (item[0].includes('国战') || item[0].includes('大作战')) {
+          return true;
+        }
+        return false;
+      })
+      .reduce((pre, cur) => {
+        return Number((pre + cur[1].积分).toFixed(2));
+      }, 0);
+    const 小榜积分 = Object.entries(value)
+      .filter((item) => {
+        if (item[0].includes('国战') || item[0].includes('大作战')) {
+          return false;
+        }
+        return true;
+      })
+      .reduce((pre, cur) => {
+        return Number((pre + cur[1].积分).toFixed(2));
+      }, 0);
+    const 综合积分 = Number((总积分 - 小榜积分).toFixed(2));
+    const item = { 名字: key, ...value, 总积分, 小榜积分, 综合积分 };
     const obj = { ...item };
     return obj;
   })
@@ -160,7 +180,6 @@ const newData = Object.entries(objData)
     return obj;
   });
 
-console.log(newData);
 function common(columns) {
   const width = columns
     .map((item) => item.width || 100)
@@ -274,6 +293,66 @@ const TableList: React.FC<unknown> = () => {
     {
       title: '档位',
       dataIndex: '档位',
+      valueType: 'text',
+      width: 50,
+    },
+    {
+      title: '小榜积分',
+      dataIndex: '小榜积分',
+      valueType: 'text',
+      width: 100,
+      render(dom, entity) {
+        const list = Object.entries(entity).filter(([key, _]) => {
+          if (
+            ['名字', '小榜积分', '总积分', '综合积分', '档位'].includes(key)
+          ) {
+            return false;
+          }
+          if (key.includes('国战') || key.includes('大作战')) {
+            return false;
+          }
+          return true;
+        });
+        return (
+          <div>
+            <Tooltip
+              title={
+                <div>
+                  {list.map(([key, value]) => {
+                    return (
+                      <div>
+                        <Tooltip
+                          title={
+                            <div>
+                              {Object.entries(value).map(([key, value]) => {
+                                return (
+                                  <div>
+                                    {key}：{value}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          }
+                        >
+                          <a>详情</a>
+                        </Tooltip>
+                        <span style={{ marginLeft: 10 }}>{key}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              }
+            >
+              <a>详情</a>
+            </Tooltip>
+            <span style={{ marginLeft: 10 }}>{dom}</span>
+          </div>
+        );
+      },
+    },
+    {
+      title: '综合积分',
+      dataIndex: '综合积分',
       valueType: 'text',
     },
   ];
