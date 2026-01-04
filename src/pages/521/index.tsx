@@ -64,7 +64,8 @@ const dynamicColumns = Object.keys(data)
               <a>详情</a>
             </Tooltip>
             <span style={{ marginLeft: 10 }}>
-              {(dom.组织 ? dom.组织 + ' ' : '') + (dom.积分 || '')}
+              {/* {dom.组织 ? dom.组织 + ' ' : ''} */}
+              {dom.积分 || ''}
             </span>
           </div>
         );
