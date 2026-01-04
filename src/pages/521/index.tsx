@@ -37,38 +37,45 @@ const 总动员与国战比例 = 总动员与国战.总动员 / 总动员与国�
 
 // 动态列，名字，积分排名
 
-const dynamicColumns = Object.keys(data).map((item) => {
-  return {
-    title: item + '积分',
-    dataIndex: item,
-    valueType: 'text',
-    width: 150,
-    render(dom) {
-      return (
-        <div>
-          <Tooltip
-            title={
-              <div>
-                {Object.entries(dom).map(([key, value]) => {
-                  return (
-                    <div>
-                      {key}：{value}
-                    </div>
-                  );
-                })}
-              </div>
-            }
-          >
-            <a>详情</a>
-          </Tooltip>
-          <span style={{ marginLeft: 10 }}>
-            {(dom.组织 ? dom.组织 + ' ' : '') + (dom.积分 || '')}
-          </span>
-        </div>
-      );
-    },
-  };
-});
+const dynamicColumns = Object.keys(data)
+  .filter((item) => {
+    if (item.includes('国战') || item.includes('大作战')) {
+      return true;
+    }
+    return false;
+  })
+  .map((item) => {
+    return {
+      title: item + '积分',
+      dataIndex: item,
+      valueType: 'text',
+      width: 150,
+      render(dom) {
+        return (
+          <div>
+            <Tooltip
+              title={
+                <div>
+                  {Object.entries(dom).map(([key, value]) => {
+                    return (
+                      <div>
+                        {key}：{value}
+                      </div>
+                    );
+                  })}
+                </div>
+              }
+            >
+              <a>详情</a>
+            </Tooltip>
+            <span style={{ marginLeft: 10 }}>
+              {(dom.组织 ? dom.组织 + ' ' : '') + (dom.积分 || '')}
+            </span>
+          </div>
+        );
+      },
+    };
+  });
 
 function processFractionData(data, key) {
   return data
@@ -97,6 +104,8 @@ function processFractionData(data, key) {
         obj.转换分数 = Number((obj.分数 / 大作战与国战比例).toFixed(2));
       } else if (key.includes('总动员')) {
         obj.转换分数 = Number((obj.分数 / 总动员与国战比例).toFixed(2));
+      } else {
+        obj.转换分数 = 0;
       }
       obj.积分 = Number((obj.转换分数 / 基数).toFixed(2));
       return obj;
