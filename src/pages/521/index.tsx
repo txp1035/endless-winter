@@ -413,16 +413,35 @@ const TableList: React.FC<unknown> = () => {
           <Button
             type="primary"
             onClick={() => {
-              const obj = {};
-              console.log(newData);
-              // newData.forEach((element) => {
-              //   const 最新的关键字 = '12月08日国战';
-              //   element[最新的关键字];
-              //   console.log(element);
-              // });
+              const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                (a, b) => b.总积分 - a.总积分,
+              );
+              setDataSource(data);
             }}
           >
-            按组织查看
+            按总积分排序
+          </Button>,
+          <Button
+            type="primary"
+            onClick={() => {
+              const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                (a, b) => b.小榜积分 - a.小榜积分,
+              );
+              setDataSource(data);
+            }}
+          >
+            按小榜积分排序
+          </Button>,
+          <Button
+            type="primary"
+            onClick={() => {
+              const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                (a, b) => b.综合积分 - a.综合积分,
+              );
+              setDataSource(data);
+            }}
+          >
+            按综合积分排序
           </Button>,
         ]}
         pagination={false}
