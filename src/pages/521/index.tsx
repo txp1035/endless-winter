@@ -9,6 +9,56 @@ import data from './data.json';
 import ListDetails from './榜单积分详情.json';
 import nameList from './游戏名数据.json';
 
+const 小榜名次对应的奖励 = {
+  小榜: {
+    1: 50000,
+    2: 30000,
+    3: 18000,
+    4: 10000,
+    5: 10000,
+    6: 6500,
+    7: 6500,
+    8: 6500,
+    9: 6500,
+    10: 6500,
+  },
+  冻土和野兽: {
+    1: 20000,
+    2: 12000,
+    3: 7500,
+    4: 4500,
+    5: 4500,
+    6: 2500,
+    7: 2500,
+    8: 2500,
+    9: 2500,
+    10: 2500,
+  },
+  领主总: {
+    1: 40000,
+    2: 24000,
+    3: 14000,
+    4: 14000,
+    5: 9000,
+    6: 9000,
+    7: 9000,
+    8: 9000,
+    9: 9000,
+    10: 9000,
+  },
+  领主阶段: {
+    1: 14000,
+    2: 8500,
+    3: 5000,
+    4: 2500,
+    5: 2500,
+    6: 2500,
+    7: 2500,
+    8: 2500,
+    9: 2500,
+    10: 2500,
+  },
+};
 const 名字映射 = {};
 nameList.forEach((element) => {
   element.名字.forEach((item) => {
@@ -114,10 +164,32 @@ function processFractionData(data, key) {
           obj.转换分数 = Number(
             (obj.分数 * 各榜单转换比例[element].平均比例分).toFixed(2),
           );
+          if (key.includes('领主总')) {
+            obj.名次分数 =
+              (obj.转换分数 * 小榜名次对应的奖励.领主总[Number(obj.排名)]) /
+              小榜名次对应的奖励.领主总[1];
+          } else if (key.includes('领主')) {
+            obj.名次分数 =
+              (obj.转换分数 * 小榜名次对应的奖励.领主阶段[Number(obj.排名)]) /
+              小榜名次对应的奖励.领主阶段[1];
+          } else if (['野兽', '冻土'].includes(element)) {
+            obj.名次分数 =
+              (obj.转换分数 * 小榜名次对应的奖励.冻土和野兽[Number(obj.排名)]) /
+              小榜名次对应的奖励.冻土和野兽[1];
+          } else if (key.includes('军备') || key.includes('士官')) {
+            obj.名次分数 =
+              (obj.转换分数 * 小榜名次对应的奖励.小榜[Number(obj.排名)]) /
+              小榜名次对应的奖励.小榜[1];
+          }
           break;
         }
       }
-      obj.积分 = Number((obj.转换分数 / 基数).toFixed(2));
+      if (obj.名次分数) {
+        obj.积分 = Number((obj.名次分数 / 基数).toFixed(2));
+      } else {
+        obj.积分 = Number((obj.转换分数 / 基数).toFixed(2));
+      }
+
       return obj;
     });
 }
