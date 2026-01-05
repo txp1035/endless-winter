@@ -7,6 +7,14 @@ import { Button, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import data from './data.json';
 import ListDetails from './榜单积分详情.json';
+import nameList from './游戏名数据.json';
+
+const 名字映射 = {};
+nameList.forEach((element) => {
+  element.名字.forEach((item) => {
+    名字映射[item] = element.名字[0];
+  });
+});
 
 const 国战榜单积分详情 = ListDetails[0].最强王国;
 const 各榜单转换比例 = Object.fromEntries(
@@ -117,11 +125,12 @@ const objData = {};
 Object.entries(data).forEach(([key, value]) => {
   const newData = processFractionData(value, key);
   newData.forEach(({ 名字, ...element }) => {
-    if (objData[名字]) {
-      objData[名字][key] = element;
+    const 新名字 = 名字映射[名字] || 名字;
+    if (objData[新名字]) {
+      objData[新名字][key] = element;
     } else {
-      objData[名字] = {};
-      objData[名字][key] = element;
+      objData[新名字] = {};
+      objData[新名字][key] = element;
     }
   });
 });
