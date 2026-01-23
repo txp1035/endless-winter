@@ -5,7 +5,7 @@ const TableList: React.FC<unknown> = () => {
   return (
     <PageContainer
       header={{
-        title: '2808堡垒规则',
+        title: '2808规则',
       }}
     >
       <h3>联盟实力排行（8月29日更新）</h3>
