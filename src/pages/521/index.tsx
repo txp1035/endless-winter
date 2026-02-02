@@ -60,7 +60,9 @@ const 小榜名次对应的奖励 = {
   },
 };
 const 名字映射 = {};
+const 名字id映射 = {};
 nameList.forEach((element) => {
+  名字id映射[element.名字[0]] = element.id;
   element.名字.forEach((item) => {
     名字映射[item] = element.名字[0];
   });
@@ -357,6 +359,12 @@ const TableList: React.FC<unknown> = () => {
       title: '名字',
       dataIndex: '名字',
       valueType: 'text',
+      render(dom, entity) {
+        if (名字id映射[dom]) {
+          return <u>{dom}</u>;
+        }
+        return <div style={{ color: 'red' }}>{dom}</div>;
+      },
       width: 100,
     },
     ...dynamicColumns,
@@ -476,8 +484,7 @@ const TableList: React.FC<unknown> = () => {
                 }
                 const element = dataSource[index];
               }
-
-              return <div>123</div>;
+              return <div></div>;
             })()}
           </>
         )}
