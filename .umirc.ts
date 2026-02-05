@@ -20,13 +20,11 @@ export default defineConfig({
       component: './521',
     },
     {
-      name: '小榜排名',
       path: '/list',
       component: './521/List',
     },
 
     {
-      name: '联盟排名',
       path: '/alliance',
       component: './Alliance',
     },

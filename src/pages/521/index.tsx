@@ -1,3 +1,4 @@
+import { IS_DEV } from '@/constants';
 import {
   PageContainer,
   ProDescriptionsItemProps,
@@ -135,21 +136,45 @@ const dynamicColumns = Object.keys(data)
   });
 
 function processFractionData(data, key) {
-  return data
-    .map((item, index, arr) => {
-      const obj = { ...item, 原始分数: item.分数 };
-      arr.forEach((item1) => {
-        if (item1.分数转移 === obj.名字) {
-          obj.分数 = obj.分数 + item1.分数;
-          obj.分数来自 =
-            (obj.分数来自 || '') + ' ' + item1.名字 + '-' + item1.分数;
-        }
+  const 分数转移数据 = [];
+  const 持有分数数据 = [];
+  JSON.parse(JSON.stringify(data)).forEach((element) => {
+    const obj = {
+      ...element,
+      原始分数: element.分数,
+      名字: 名字映射[element.名字] || element.名字,
+    };
+
+    if (obj.分数转移 === obj.名字) {
+      console.log('错误', obj);
+    }
+    if (obj.分数转移) {
+      obj.分数转移 = 名字映射[element.分数转移] || obj.分数转移;
+      分数转移数据.push(obj);
+    } else {
+      持有分数数据.push(obj);
+    }
+  });
+  分数转移数据.forEach((element) => {
+    const 持有分数人 = 持有分数数据.find(
+      (item) => item.名字 === element.分数转移,
+    );
+    if (持有分数人) {
+      持有分数人.分数 = 持有分数人.分数 + element.分数;
+      持有分数人.分数来自 =
+        (持有分数人.分数来自 || '') + ' ' + element.名字 + '-' + element.分数;
+      element.分数 = 0;
+    } else {
+      持有分数数据.push({
+        名字: element.分数转移,
+        分数: element.分数,
+        原始分数: 0,
+        总排名: '无',
       });
-      if (item.分数转移) {
-        obj.分数 = 0;
-      }
-      return obj;
-    })
+      element.分数 = 0;
+    }
+  });
+  return [...分数转移数据, ...持有分数数据]
     .sort((a, b) => b.分数 - a.分数)
     .map((item, index, arr) => {
       const obj = { ...item };
@@ -196,6 +221,11 @@ function processFractionData(data, key) {
       return obj;
     });
 }
+/**
+ * 源数据处理，一个数据为一列数据
+ * 以名字分类每个榜单对应数据对应到名字里
+ * 分数处理：各榜单分数转换计算，分数转移计算
+ */
 const objData = {};
 Object.entries(data).forEach(([key, value]) => {
   const newData = processFractionData(value, key);
@@ -387,13 +417,8 @@ const TableList: React.FC<unknown> = () => {
       width: 100,
     },
     {
-      title: '档位',
-      dataIndex: '档位',
-      valueType: 'text',
-      width: 50,
-    },
-    {
       title: '小榜积分',
+      hideInTable: !IS_DEV,
       dataIndex: '小榜积分',
       valueType: 'text',
       width: 100,
@@ -448,7 +473,14 @@ const TableList: React.FC<unknown> = () => {
     },
     {
       title: '综合积分',
+      hideInTable: !IS_DEV,
       dataIndex: '综合积分',
+      valueType: 'text',
+      width: 100,
+    },
+    {
+      title: '档位',
+      dataIndex: '档位',
       valueType: 'text',
     },
   ];
@@ -494,41 +526,49 @@ const TableList: React.FC<unknown> = () => {
             })()}
           </>
         )}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            onClick={() => {
-              const data = JSON.parse(JSON.stringify(dataSource)).sort(
-                (a, b) => b.总积分 - a.总积分,
-              );
-              setDataSource(data);
-            }}
-          >
-            按总积分排序
-          </Button>,
-          <Button
-            type="primary"
-            onClick={() => {
-              const data = JSON.parse(JSON.stringify(dataSource)).sort(
-                (a, b) => b.小榜积分 - a.小榜积分,
-              );
-              setDataSource(data);
-            }}
-          >
-            按小榜积分排序
-          </Button>,
-          <Button
-            type="primary"
-            onClick={() => {
-              const data = JSON.parse(JSON.stringify(dataSource)).sort(
-                (a, b) => b.综合积分 - a.综合积分,
-              );
-              setDataSource(data);
-            }}
-          >
-            按综合积分排序
-          </Button>,
-        ]}
+        toolBarRender={() => {
+          return [
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                    (a, b) => b.总积分 - a.总积分,
+                  );
+                  setDataSource(data);
+                }}
+              >
+                按总积分排序
+              </Button>
+            ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                    (a, b) => b.小榜积分 - a.小榜积分,
+                  );
+                  setDataSource(data);
+                }}
+              >
+                按小榜积分排序
+              </Button>
+            ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                    (a, b) => b.综合积分 - a.综合积分,
+                  );
+                  setDataSource(data);
+                }}
+              >
+                按综合积分排序
+              </Button>
+            ),
+          ];
+        }}
         pagination={false}
         search={false}
         dataSource={dataSource}

@@ -2,6 +2,7 @@ import { PageContainer } from '@ant-design/pro-components';
 import React from 'react';
 
 const TableList: React.FC<unknown> = () => {
+  return '更新中';
   return (
     <PageContainer
       header={{
