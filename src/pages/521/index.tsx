@@ -4,8 +4,9 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Tooltip } from 'antd';
+import dayjs from 'dayjs';
 import React, { useState } from 'react';
-import data from './data.json';
+import data from './data';
 import ListDetails from './榜单积分详情.json';
 import nameList from './游戏名数据.json';
 
@@ -215,7 +216,12 @@ const newData = Object.entries(objData)
     const 总积分 = Object.entries(value)
       .filter((item) => {
         if (item[0].includes('国战') || item[0].includes('大作战')) {
-          return true;
+          const newStr = item[0].replace('国战', '').replace('大作战', '');
+
+          if (+dayjs(newStr) >= +dayjs('20260201')) {
+            return true;
+          }
+          return false;
         }
         return false;
       })

@@ -12,23 +12,24 @@ export default defineConfig({
   routes: [
     {
       path: '/',
-      redirect: '/personal',
+      redirect: '/521',
     },
-    // {
-    //   name: '个人排名',
-    //   path: '/personal',
-    //   component: './Personal',
-    // },
     {
       name: '国战个人排名',
       path: '/521',
       component: './521',
     },
-    // {
-    //   name: '联盟排名',
-    //   path: '/alliance',
-    //   component: './Alliance',
-    // },
+    {
+      name: '小榜排名',
+      path: '/list',
+      component: './521/List',
+    },
+
+    {
+      name: '联盟排名',
+      path: '/alliance',
+      component: './Alliance',
+    },
     {
       name: '国战预约',
       path: '/teservation',

@@ -5,7 +5,7 @@ import {
 } from '@ant-design/pro-components';
 import { Tooltip } from 'antd';
 import React, { useState } from 'react';
-import data from './data.json';
+import data from './data';
 
 const newData = Object.entries(data)
   .filter(([key, _]) => {
