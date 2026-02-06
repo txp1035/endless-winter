@@ -168,6 +168,7 @@ function processFractionData(data, key) {
       持有分数数据.push({
         名字: element.分数转移,
         分数: element.分数,
+        分数来自: element.名字 + '-' + element.分数,
         原始分数: 0,
         总排名: '无',
       });
