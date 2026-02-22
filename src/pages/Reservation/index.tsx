@@ -100,21 +100,23 @@ const TableList: React.FC<unknown> = () => {
           width: 200,
           render: (text, record, _, action) => [
             <Form type="edit" actionRef={actionRef} info={record} />,
-            <a
-              key="view"
-              onClick={() => {
-                Modal.confirm({
-                  title: '是否删除',
-                  content: `${record.name}的预约`,
-                  onOk: async () => {
-                    await deleteInfo(record.id);
-                    actionRef.current?.reload();
-                  },
-                });
-              }}
-            >
-              删除
-            </a>,
+            isDev && (
+              <a
+                key="view"
+                onClick={() => {
+                  Modal.confirm({
+                    title: '是否删除',
+                    content: `${record.name}的预约`,
+                    onOk: async () => {
+                      await deleteInfo(record.id);
+                      actionRef.current?.reload();
+                    },
+                  });
+                }}
+              >
+                删除
+              </a>
+            ),
           ],
         },
       ]
