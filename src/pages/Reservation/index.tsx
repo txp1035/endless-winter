@@ -1,3 +1,4 @@
+import { IS_DEV } from '@/constants';
 import { deleteInfo, editInfo, getInfo } from '@/utils/getData';
 import type { ActionType } from '@ant-design/pro-components';
 import {
@@ -9,8 +10,6 @@ import { Button, Modal } from 'antd';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import Form from './Form';
-
-const isDev = false;
 
 function calculateTime(list) {
   const timeList = [];
@@ -100,7 +99,7 @@ const TableList: React.FC<unknown> = () => {
           width: 200,
           render: (text, record, _, action) => [
             <Form type="edit" actionRef={actionRef} info={record} />,
-            isDev && (
+            IS_DEV && (
               <a
                 key="view"
                 onClick={() => {
@@ -202,7 +201,7 @@ const TableList: React.FC<unknown> = () => {
         search={false}
         toolBarRender={() => [
           <Form type="add" actionRef={actionRef} />,
-          isDev && (
+          IS_DEV && (
             <Button
               type="primary"
               onClick={async () => {
