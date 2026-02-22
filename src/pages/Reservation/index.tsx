@@ -1,4 +1,4 @@
-import { deleteInfo, editInfo, getInfo } from '@/utils/leancloud';
+import { deleteInfo, editInfo, getInfo } from '@/utils/getData';
 import type { ActionType } from '@ant-design/pro-components';
 import {
   PageContainer,

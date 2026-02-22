@@ -1,4 +1,4 @@
-import { editInfo, saveInfo } from '@/utils/leancloud';
+import { editInfo, saveInfo } from '@/utils/getData';
 import {
   ProForm,
   ProFormDigit,
