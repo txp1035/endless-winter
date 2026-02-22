@@ -25,8 +25,8 @@ export default defineConfig({
     },
 
     {
-      path: '/alliance',
-      component: './Alliance',
+      path: '/mine',
+      component: './Mine',
     },
     {
       name: '国战预约',

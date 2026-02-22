@@ -1,3 +1,4 @@
+import { Link } from 'umi';
 import data from './data 乔伊数据.json';
 
 export default function index() {
@@ -18,6 +19,7 @@ export default function index() {
     (data['1级'][20] + data['1级'][10]) * 1.5;
   return (
     <div>
+      <Link to="/list">小榜排名</Link>
       <div>离线：{离线}</div>
       <div>在线：{在线}</div>
       <div>总分：{总分}</div>
