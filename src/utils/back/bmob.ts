@@ -4,13 +4,13 @@ import Bmob from 'hydrogen-js-sdk';
 Bmob.initialize('f603562d333eb7e1', '1234567891234567');
 
 export const deleteInfo = async (id) => {
-  const todo = AV.Object.createWithoutData('wjdr', id);
-  await todo.destroy();
+  const query = Bmob.Query('wjdr');
+  await query.destroy(id);
 };
 export const getInfo = async () => {
   const query = Bmob.Query('wjdr');
   const list = await query.find();
-  return [...list];
+  return [...list].map((item) => ({ ...item, id: item.objectId }));
 };
 export const saveInfo = async (obj: {
   name: string;
@@ -34,9 +34,11 @@ export const saveInfo = async (obj: {
 };
 export const editInfo = async (obj: { id: string }) => {
   const { id, ...rest } = obj;
-  const todo = AV.Object.createWithoutData('wjdr', id);
+  console.log(obj);
+  const query = Bmob.Query('wjdr');
+  query.set('id', id);
   Object.entries(rest).forEach(([key, value]) => {
-    todo.set(key, value);
+    query.set(key, value);
   });
-  await todo.save();
+  await query.save();
 };
