@@ -119,7 +119,7 @@ const dynamicColumns = Object.keys(data)
       title: item + '积分',
       dataIndex: item,
       valueType: 'text',
-      width: 150,
+      width: 160,
       render(dom) {
         return (
           <div>
@@ -257,6 +257,21 @@ Object.entries(data).forEach(([key, value]) => {
   });
 });
 const number = { 一档: 0, 二档: 0, 三档: 0, 四档: 0 };
+const number议会情况 = { 一档: 0, 二档: 0, 三档: 0, 四档: 0 };
+const 议会 = [
+  '488303971',
+  '488106222',
+  '487418078',
+  '489664664',
+  '489105630',
+  '488532433',
+  '488451573',
+  '488696770',
+  '487516373',
+].map((item) => {
+  const 人 = nameList.find((item1) => item1.id === item);
+  return 人?.名字[0];
+});
 
 const newData = Object.entries(objData)
   .map(([key, value]) => {
@@ -304,15 +319,27 @@ const newData = Object.entries(objData)
     if (obj.总积分 >= 一档) {
       obj.档位 = 1;
       number.一档 = number.一档 + 1;
+      if (议会.includes(obj.名字)) {
+        number议会情况.一档 = number议会情况.一档 + 1;
+      }
     } else if (obj.总积分 >= 二档 && obj.总积分 < 一档) {
       obj.档位 = 2;
       number.二档 = number.二档 + 1;
+      if (议会.includes(obj.名字)) {
+        number议会情况.二档 = number议会情况.二档 + 1;
+      }
     } else if (obj.总积分 >= 三档 && obj.总积分 < 二档) {
       obj.档位 = 3;
       number.三档 = number.三档 + 1;
+      if (议会.includes(obj.名字)) {
+        number议会情况.三档 = number议会情况.三档 + 1;
+      }
     } else if (obj.总积分 >= 四档 && obj.总积分 < 三档) {
       obj.档位 = 4;
       number.四档 = number.四档 + 1;
+      if (议会.includes(obj.名字)) {
+        number议会情况.四档 = number议会情况.四档 + 1;
+      }
     }
     return obj;
   });
@@ -341,6 +368,14 @@ function common(columns) {
 }
 
 const 堡垒数据 = {
+  堡垒碎片: {
+    上限: 10,
+    总数: 200,
+  },
+  堡垒高迁: {
+    上限: 4,
+    总数: 90,
+  },
   堡垒加速: {
     上限: 10,
     总数: 400,
@@ -349,17 +384,13 @@ const 堡垒数据 = {
     上限: 2,
     总数: 60,
   },
-  堡垒茉莉: {
-    上限: 10,
-    总数: 200,
-  },
-  堡垒高迁: {
-    上限: 4,
-    总数: 90,
-  },
   堡垒螺丝: {
     上限: 15,
     总数: 500,
+  },
+  堡垒技能书: {
+    上限: 0,
+    总数: 0,
   },
   堡垒洗练石: {
     上限: 20,
@@ -373,7 +404,7 @@ const 堡垒数据 = {
     上限: 3,
     总数: 100,
   },
-  要塞老头: {
+  要塞碎片: {
     上限: 15,
     总数: 420,
   },
@@ -528,7 +559,7 @@ const TableList: React.FC<unknown> = () => {
               <span>三档: {number.三档} </span>
               <span>四档: {number.四档} </span>
               <span>
-                总数: {number.一档 + number.二档 + number.三档 + number.四档}{' '}
+                总数: {number.一档 + number.二档 + number.三档 + number.四档}
               </span>
             </div>
             {(() => {
@@ -614,6 +645,81 @@ const TableList: React.FC<unknown> = () => {
                 }}
               >
                 名字重复检测
+              </Button>
+            ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const 非议会一档 = number.一档 - number议会情况.一档;
+                  const 非议会二档 = number.二档 - number议会情况.二档;
+                  const 非议会三档 = number.三档 - number议会情况.三档;
+                  const 非议会四档 = number.四档 - number议会情况.四档;
+                  const 分配情况 = Object.entries(堡垒数据).map(
+                    ([key, value]) => {
+                      const 实际分配 =
+                        value.上限 * (议会.length + 非议会一档) +
+                        Math.floor(value.上限 / 2) * 非议会二档 +
+                        Math.floor(value.上限 / 4) * 非议会三档 +
+                        Math.floor(value.上限 / 8) * 非议会四档;
+                      return [key, { ...value, 实际分配 }];
+                    },
+                  );
+                  Modal.info({
+                    content: (
+                      <>
+                        <div>
+                          <span>一档: {number议会情况.一档} </span>
+                          <span>二档: {number议会情况.二档} </span>
+                          <span>三档: {number议会情况.三档} </span>
+                          <span>四档: {number议会情况.四档} </span>
+                          <span>
+                            总数:
+                            {number议会情况.一档 +
+                              number议会情况.二档 +
+                              number议会情况.三档 +
+                              number议会情况.四档}
+                          </span>
+                        </div>
+                        <div>
+                          <span>一档: {非议会一档}</span>
+                          <span>二档: {非议会二档}</span>
+                          <span>三档: {非议会三档}</span>
+                          <span>四档: {非议会四档}</span>
+                          <span>
+                            总数:
+                            {非议会一档 + 非议会二档 + 非议会三档 + 非议会四档}
+                          </span>
+                        </div>
+                        <table>
+                          <tr>
+                            <th>奖励名</th>
+                            <th>实际分配</th>
+                            <th>总数</th>
+                            <th>剩余数量</th>
+                          </tr>
+                          {分配情况.map(([key, value]) => {
+                            const 剩下 = value.总数 - value.实际分配;
+                            return (
+                              <tr>
+                                <td>{key}</td>
+                                <td>{value.实际分配}</td>
+                                <td>{value.总数}</td>
+                                <td
+                                  style={{ color: 剩下 >= 0 ? 'black' : 'red' }}
+                                >
+                                  {剩下}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </table>
+                      </>
+                    ),
+                  });
+                }}
+              >
+                分配数量检查
               </Button>
             ),
           ];
