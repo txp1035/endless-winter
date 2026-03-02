@@ -11,6 +11,19 @@ import data from './data';
 import ListDetails from './榜单积分详情.json';
 import nameList from './游戏名数据.json';
 
+function 默认小号对应的大号名字() {
+  const list = {};
+  nameList
+    .filter((item) => item.小号)
+    .forEach((item) => {
+      item.小号?.forEach((item1) => {
+        const 小号 = nameList.find((item2) => item2.id === item1);
+        list[小号?.名字[0]] = item.名字[0];
+      });
+    });
+  return list;
+}
+
 const 小榜名次对应的奖励 = {
   小榜: {
     1: 50000,
@@ -138,15 +151,18 @@ const dynamicColumns = Object.keys(data)
 function processFractionData(data, key) {
   const 分数转移数据 = [];
   const 持有分数数据 = [];
+  const list = 默认小号对应的大号名字();
   JSON.parse(JSON.stringify(data)).forEach((element) => {
     const obj = {
       ...element,
       原始分数: element.分数,
       名字: 名字映射[element.名字] || element.名字,
     };
-
     if (obj.分数转移 === obj.名字) {
       console.log('错误', obj);
+    }
+    if (obj.名字 in list && !obj.分数转移) {
+      obj.分数转移 = list[obj.名字];
     }
     if (obj.分数转移) {
       obj.分数转移 = 名字映射[element.分数转移] || obj.分数转移;
