@@ -4,7 +4,7 @@ import {
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Tooltip } from 'antd';
+import { Button, Modal, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import data from './data';
@@ -566,6 +566,38 @@ const TableList: React.FC<unknown> = () => {
                 }}
               >
                 按综合积分排序
+              </Button>
+            ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const list = nameList
+                    .filter((item) => item.id)
+                    .map((item) => item.id);
+                  const setList = new Set();
+                  const duplicates = [];
+                  list.forEach((item) => {
+                    if (setList.has(item)) {
+                      duplicates.push(item);
+                    } else {
+                      setList.add(item);
+                    }
+                  });
+
+                  if (list.length === [...new Set(list)].length) {
+                    Modal.info({ title: '没有重复' });
+                  } else {
+                    Modal.error({
+                      title: '存在重复',
+                      content: `一共数据${
+                        list.length
+                      }条，重复数据有${JSON.stringify(duplicates)}`,
+                    });
+                  }
+                }}
+              >
+                名字重复检测
               </Button>
             ),
           ];
