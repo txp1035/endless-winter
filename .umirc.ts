@@ -34,6 +34,11 @@ export default defineConfig({
       component: './Reservation',
     },
     {
+      name: '账号关联',
+      path: '/account',
+      component: './Account',
+    },
+    {
       name: '堡垒规则',
       path: '/rules',
       component: './Rules',
