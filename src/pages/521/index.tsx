@@ -722,6 +722,43 @@ const TableList: React.FC<unknown> = () => {
                 分配数量检查
               </Button>
             ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const list = data['2026-03-01国战'];
+                  const list排名 = list.sort((a, b) => a.排名 - b.排名);
+                  const 错误 = [];
+                  list排名.forEach((item, index, arr) => {
+                    if (index === 0) {
+                      if (item.分数 < arr[index + 1].分数) {
+                        错误.push(item);
+                      }
+                      return;
+                    }
+                    if (index === arr.length - 1) {
+                      if (item.分数 > arr[index - 1].分数) {
+                        错误.push(item);
+                      }
+                      return;
+                    }
+                    const 分数情况 =
+                      item.分数 >= arr[index + 1].分数 &&
+                      item.分数 <= arr[index - 1].分数;
+
+                    if (!分数情况) {
+                      错误.push(item);
+                    }
+                  });
+                  if (错误.length > 0) {
+                    Modal.error({ title: '数据错误，看日志' });
+                  }
+                  console.log('错误日志', 错误);
+                }}
+              >
+                国战分检测
+              </Button>
+            ),
           ];
         }}
         pagination={false}
