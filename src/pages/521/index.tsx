@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import data from './data';
 import ListDetails from './榜单积分详情.json';
 import nameList from './游戏名数据.json';
+import 白名单 from './白名单.json';
 
 function 默认小号对应的大号名字() {
   const list = {};
@@ -757,6 +758,51 @@ const TableList: React.FC<unknown> = () => {
                 }}
               >
                 国战分检测
+              </Button>
+            ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const list = [];
+                  const 新白名单 = 白名单.map((item) => {
+                    if (item in 名字映射) {
+                    } else {
+                      list.push(item);
+                    }
+                    return 名字映射[item];
+                  });
+                  const q100 = dataSource
+                    .filter((item, index) => index <= 99)
+                    .map((item) => item.名字);
+
+                  const 白名单要删除 = 新白名单.filter(
+                    (item) => !q100.includes(item),
+                  );
+                  const 白名单要添加 = q100.filter(
+                    (item) => !新白名单.includes(item),
+                  );
+                  Modal.info({
+                    title: '白名单情况',
+                    content: (
+                      <>
+                        <div>
+                          不存在的名字:{list.map((item) => item + ' | ')}
+                        </div>
+                        <div>
+                          白名单要删除的名字:
+                          {白名单要删除.map((item) => item + ' | ')}
+                        </div>
+                        <div>
+                          白名单要添加的名字:
+                          {白名单要添加.map((item) => item + ' | ')}
+                        </div>
+                      </>
+                    ),
+                  });
+                }}
+              >
+                白名单检测
               </Button>
             ),
           ];
