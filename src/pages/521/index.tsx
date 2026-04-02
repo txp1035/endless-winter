@@ -12,6 +12,17 @@ import ListDetails from './榜单积分详情.json';
 import nameList from './游戏名数据.json';
 import 白名单 from './白名单.json';
 
+const 国战低保分 = 1320000;
+
+const 升档 = {
+  '（开心就好）': { number: 1, 原因: '国战愿意砖石加速' },
+  '大锤，2808颜值担当': { number: 1, 原因: '国战愿意砖石加速' },
+  十二丶: { number: 1, 原因: '国战愿意砖石加速' },
+  '小贝丶（发呆中）': { number: 1, 原因: '国战愿意砖石加速' },
+  我也要死吗: { number: 1, 原因: '国战愿意砖石加速' },
+  '晴山栖谷（贝贝控号版）': { number: 1, 原因: '国战愿意砖石加速' },
+};
+
 function 默认小号对应的大号名字() {
   const list = {};
   nameList
@@ -196,7 +207,7 @@ function processFractionData(data, key) {
     .sort((a, b) => b.分数 - a.分数)
     .map((item, index, arr) => {
       const obj = { ...item };
-      let 基数 = 6000000;
+      let 基数 = 国战低保分;
       obj.分数 = obj.分数 || 0;
       obj.转换分数 = 0;
       if (key.includes('国战')) {
@@ -265,7 +276,6 @@ const 议会 = [
   '487418078',
   '489664664',
   '489105630',
-  '488532433',
   '488451573',
   '488696770',
   '487516373',
@@ -317,30 +327,55 @@ const newData = Object.entries(objData)
     const 二档 = 第一名积分 / 4;
     const 三档 = 第一名积分 / 8;
     const 四档 = 第一名积分 / 16;
-    if (obj.总积分 >= 一档) {
+    // const 是一档 = obj.总积分 >= 一档;
+    // const 是二档 = obj.总积分 >= 二档 && obj.总积分 < 一档;
+    // const 是三档 = obj.总积分 >= 三档 && obj.总积分 < 二档;
+    // const 是四档 = obj.总积分 >= 四档 && obj.总积分 < 三档;
+    const 是一档 = index + 1 <= 6;
+    const 是二档 = index + 1 <= 18 && index + 1 > 6;
+    const 是三档 = index + 1 <= 42 && index + 1 > 18;
+    const 是四档 = index + 1 <= 100 && index + 1 > 42 && obj.总积分 !== 0;
+    if (是一档) {
       obj.档位 = 1;
-      number.一档 = number.一档 + 1;
-      if (议会.includes(obj.名字)) {
-        number议会情况.一档 = number议会情况.一档 + 1;
-      }
-    } else if (obj.总积分 >= 二档 && obj.总积分 < 一档) {
+    } else if (是二档) {
       obj.档位 = 2;
-      number.二档 = number.二档 + 1;
-      if (议会.includes(obj.名字)) {
-        number议会情况.二档 = number议会情况.二档 + 1;
-      }
-    } else if (obj.总积分 >= 三档 && obj.总积分 < 二档) {
+    } else if (是三档) {
       obj.档位 = 3;
-      number.三档 = number.三档 + 1;
-      if (议会.includes(obj.名字)) {
-        number议会情况.三档 = number议会情况.三档 + 1;
-      }
-    } else if (obj.总积分 >= 四档 && obj.总积分 < 三档) {
+    } else if (是四档) {
       obj.档位 = 4;
-      number.四档 = number.四档 + 1;
-      if (议会.includes(obj.名字)) {
-        number议会情况.四档 = number议会情况.四档 + 1;
-      }
+    }
+    if (obj.名字 in 升档) {
+      obj.档位 = obj.档位 - 升档[obj.名字].number;
+      obj.备注 = obj.备注 || '' + '升档原因：' + 升档[obj.名字].原因;
+    }
+    switch (obj.档位) {
+      case 1:
+        number.一档 = number.一档 + 1;
+        if (议会.includes(obj.名字)) {
+          number议会情况.一档 = number议会情况.一档 + 1;
+        }
+        break;
+      case 2:
+        number.二档 = number.二档 + 1;
+        if (议会.includes(obj.名字)) {
+          number议会情况.二档 = number议会情况.二档 + 1;
+        }
+        break;
+      case 3:
+        number.三档 = number.三档 + 1;
+        if (议会.includes(obj.名字)) {
+          number议会情况.三档 = number议会情况.三档 + 1;
+        }
+        break;
+      case 4:
+        number.四档 = number.四档 + 1;
+        if (议会.includes(obj.名字)) {
+          number议会情况.四档 = number议会情况.四档 + 1;
+        }
+        break;
+
+      default:
+        break;
     }
     return obj;
   });
@@ -531,6 +566,12 @@ const TableList: React.FC<unknown> = () => {
       title: '档位',
       dataIndex: '档位',
       valueType: 'text',
+      width: 80,
+    },
+    {
+      title: '备注',
+      dataIndex: '备注',
+      valueType: 'text',
     },
   ];
 
@@ -552,7 +593,10 @@ const TableList: React.FC<unknown> = () => {
             <div>
               转换分数：不同活动消耗材料得到的分数不同，这个分数保证每个活动消耗同样的材料得到一样的分数
             </div>
-            <div>积分：转换分数/6000000，数字小方便看</div>
+            <div>
+              积分：转换分数/国战低保分（{国战低保分}
+              ），数字小方便看，能看出上了几倍低保分
+            </div>
             <h3>档位数据</h3>
             <div>
               <span>一档: {number.一档} </span>
