@@ -15,12 +15,18 @@ import 白名单 from './白名单.json';
 const 国战低保分 = 1320000;
 
 const 升档 = {
-  '（开心就好）': { number: 1, 原因: '国战愿意砖石加速' },
-  '大锤，2808颜值担当': { number: 1, 原因: '国战愿意砖石加速' },
-  十二丶: { number: 1, 原因: '国战愿意砖石加速' },
-  '小贝丶（发呆中）': { number: 1, 原因: '国战愿意砖石加速' },
-  我也要死吗: { number: 1, 原因: '国战愿意砖石加速' },
-  '晴山栖谷（贝贝控号版）': { number: 1, 原因: '国战愿意砖石加速' },
+  '（开心就好）': { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  '大锤，2808颜值担当': {
+    number: 1,
+    原因: '国战负责王城驻防，愿意砖石加速进王城',
+  },
+  十二丶: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  '小贝丶（发呆中）': {
+    number: 1,
+    原因: '国战负责王城驻防，愿意砖石加速进王城',
+  },
+  我也要死吗: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  糕糕ovo: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
 };
 
 function 默认小号对应的大号名字() {
@@ -284,7 +290,7 @@ const 议会 = [
   return 人?.名字[0];
 });
 
-const newData = Object.entries(objData)
+const 最终数据 = Object.entries(objData)
   .map(([key, value]) => {
     const 总积分 = Object.entries(value)
       .filter((item) => {
@@ -380,6 +386,42 @@ const newData = Object.entries(objData)
     return obj;
   });
 
+function sortData(data: []) {
+  const obj = {
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+  };
+  data.forEach((item) => {
+    switch (item.档位) {
+      case 1:
+        obj[1].push(item);
+        break;
+      case 2:
+        obj[2].push(item);
+        break;
+      case 3:
+        obj[3].push(item);
+        break;
+      case 4:
+        obj[4].push(item);
+        break;
+
+      default:
+        obj[5].push(item);
+        break;
+    }
+  });
+  const 档位1 = obj[1].sort((a, b) => b.总积分 - a.总积分);
+  const 档位2 = obj[2].sort((a, b) => b.总积分 - a.总积分);
+  const 档位3 = obj[3].sort((a, b) => b.总积分 - a.总积分);
+  const 档位4 = obj[4].sort((a, b) => b.总积分 - a.总积分);
+  return 档位1.concat(档位2).concat(档位3).concat(档位4).concat(obj[5]);
+}
+const 排序数据 = sortData(最终数据);
+
 function common(columns) {
   const width = columns
     .map((item) => item.width || 100)
@@ -468,7 +510,7 @@ const obj = Object.keys(堡垒数据).map((item) => {
 });
 
 const TableList: React.FC<unknown> = () => {
-  const [dataSource, setDataSource] = useState(newData);
+  const [dataSource, setDataSource] = useState(排序数据);
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
       title: '排名',
