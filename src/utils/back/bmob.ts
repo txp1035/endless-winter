@@ -1,7 +1,7 @@
 // 打开 main.js
 import Bmob from 'hydrogen-js-sdk';
-//初始化
-Bmob.initialize('f603562d333eb7e1', '1234567891234567');
+//初始化 Secret Key  API安全码
+Bmob.initialize('19b72c6c089c820f', '1234567891234567');
 
 export const deleteInfo = async (id) => {
   const query = Bmob.Query('wjdr');
