@@ -523,7 +523,7 @@ const TableList: React.FC<unknown> = () => {
       valueType: 'text',
       render(dom, entity) {
         if (名字id映射[dom]) {
-          return <u>{dom}</u>;
+          return <Tooltip title={'id:' + 名字id映射[dom]}>{dom}</Tooltip>;
         }
         return <div style={{ color: 'red' }}>{dom}</div>;
       },
