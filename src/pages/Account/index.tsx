@@ -36,11 +36,12 @@ const newData = data
     const { id, ...rest } = item;
     obj[id] = rest;
     return {
-      name1: item.名字[0],
+      name1: item.id,
       小号: item.小号,
     };
   })
   .filter((item) => item.小号);
+console.log(newData);
 const TableList: React.FC<unknown> = () => {
   const actionRef = useRef<ActionType>();
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
@@ -48,12 +49,15 @@ const TableList: React.FC<unknown> = () => {
       title: '大号',
       dataIndex: 'name1',
       width: 200,
+      render: (dom, entity) => {
+        return <Tooltip title={'id:' + dom}>{obj[dom].名字[0]}</Tooltip>;
+      },
     },
     {
       title: '小号',
       dataIndex: 'name2',
       render: (dom, entity) => {
-        console.log(entity);
+        // console.log(entity);
         return entity.小号.map((item) => (
           <Tooltip title={'id:' + item}>
             <a style={{ marginRight: 10 }}>{obj[item].名字[0]}</a>

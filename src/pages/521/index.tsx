@@ -15,18 +15,18 @@ import 白名单 from './白名单.json';
 const 国战低保分 = 1320000;
 
 const 升档 = {
-  '（开心就好）': { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
-  '大锤，2808颜值担当': {
-    number: 1,
-    原因: '国战负责王城驻防，愿意砖石加速进王城',
-  },
-  十二丶: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
-  '小贝丶（发呆中）': {
-    number: 1,
-    原因: '国战负责王城驻防，愿意砖石加速进王城',
-  },
-  我也要死吗: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
-  糕糕ovo: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  // '（开心就好）': { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  // '大锤，2808颜值担当': {
+  //   number: 1,
+  //   原因: '国战负责王城驻防，愿意砖石加速进王城',
+  // },
+  // 十二丶: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  // '小贝丶（发呆中）': {
+  //   number: 1,
+  //   原因: '国战负责王城驻防，愿意砖石加速进王城',
+  // },
+  // 我也要死吗: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
+  // 糕糕ovo: { number: 1, 原因: '国战负责王城驻防，愿意砖石加速进王城' },
 };
 
 function 默认小号对应的大号名字() {
@@ -510,7 +510,7 @@ const obj = Object.keys(堡垒数据).map((item) => {
 });
 
 const TableList: React.FC<unknown> = () => {
-  const [dataSource, setDataSource] = useState(最终数据);
+  const [dataSource, setDataSource] = useState(排序数据);
   const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
     {
       title: '排名',
