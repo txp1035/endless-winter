@@ -891,6 +891,23 @@ const TableList: React.FC<unknown> = () => {
                 白名单检测
               </Button>
             ),
+            IS_DEV && (
+              <Button
+                type="primary"
+                onClick={() => {
+                  const data = dataSource
+                    .filter((item, index) => item.档位 && index <= 99)
+                    .map((item) => item.名字);
+                  console.log(data);
+                  Modal.info({
+                    title: '当前白名单情况',
+                    content: JSON.stringify(data),
+                  });
+                }}
+              >
+                白名单查看
+              </Button>
+            ),
           ];
         }}
         pagination={false}
