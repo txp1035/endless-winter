@@ -166,7 +166,15 @@ const dynamicColumns = Object.keys(data)
     };
   });
 
+function 名字数据重复查询(data) {
+  const newData = data.map((item) => item.名字);
+  if (new Set(newData).size !== newData.length) {
+    throw new Error('名字重复');
+  }
+}
+
 function processFractionData(data, key) {
+  名字数据重复查询(data);
   const 分数转移数据 = [];
   const 持有分数数据 = [];
   const list = 默认小号对应的大号名字();
