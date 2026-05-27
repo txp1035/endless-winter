@@ -41,6 +41,9 @@ function 默认小号对应的大号名字() {
     });
   return list;
 }
+function 打折号() {
+  return nameList.filter((item) => item.等级).map((item) => item.名字[0]);
+}
 
 const 小榜名次对应的奖励 = {
   小榜: {
@@ -178,12 +181,17 @@ function processFractionData(data, key) {
   const 分数转移数据 = [];
   const 持有分数数据 = [];
   const list = 默认小号对应的大号名字();
+  const list1 = 打折号();
   JSON.parse(JSON.stringify(data)).forEach((element) => {
     const obj = {
       ...element,
       原始分数: element.分数,
       名字: 名字映射[element.名字] || element.名字,
     };
+    if (list1.includes(obj.名字)) {
+      obj.分数 = obj.原始分数 * 0.5;
+      obj.打折后分数 = obj.原始分数 * 0.5;
+    }
     if (obj.分数转移 === obj.名字) {
       console.log('错误', obj);
     }
