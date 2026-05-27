@@ -659,6 +659,7 @@ const TableList: React.FC<unknown> = () => {
               积分：转换分数/国战低保分（{国战低保分}
               ），数字小方便看，能看出上了几倍低保分
             </div>
+            <div>小盟可分：可以进小盟分配（每期平均积分大于9）</div>
             <h3>档位数据</h3>
             <div>
               <span>一档: {number.一档} </span>
