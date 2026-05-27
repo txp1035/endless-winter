@@ -357,8 +357,8 @@ const 最终数据 = Object.entries(objData)
     const 是二档 = index + 1 <= 18 && index + 1 > 6;
     const 是三档 = index + 1 <= 42 && index + 1 > 18;
     const 是四档 = index + 1 <= 100 && index + 1 > 42 && obj.总积分 !== 0;
-    const { 名字, 小榜积分, 总积分, 档位, 综合积分, ...详情 } = obj;
-    const 是五档 = index + 1 > 100 && obj.总积分 / Object.keys(详情).length > 9;
+    // const { 名字, 小榜积分, 总积分, 档位, 综合积分, ...详情 } = obj;
+    // const 是五档 = index + 1 > 100 && obj.总积分 / Object.keys(详情).length > 9;
     if (是一档) {
       obj.档位 = 1;
     } else if (是二档) {
@@ -367,9 +367,10 @@ const 最终数据 = Object.entries(objData)
       obj.档位 = 3;
     } else if (是四档) {
       obj.档位 = 4;
-    } else if (是五档) {
-      obj.档位 = '小盟可分';
     }
+    // else if (是五档) {
+    //   obj.档位 = '小盟可分';
+    // }
     if (obj.名字 in 升档) {
       obj.档位 = obj.档位 - 升档[obj.名字].number;
       obj.备注 = obj.备注 || '' + '升档原因：' + 升档[obj.名字].原因;
@@ -659,7 +660,7 @@ const TableList: React.FC<unknown> = () => {
               积分：转换分数/国战低保分（{国战低保分}
               ），数字小方便看，能看出上了几倍低保分
             </div>
-            <div>小盟可分：可以进小盟分配（每期平均积分大于9）</div>
+            {/* <div>小盟可分：有位置的情况可以进小盟分配（每期平均积分大于9）</div> */}
             <h3>档位数据</h3>
             <div>
               <span>一档: {number.一档} </span>
