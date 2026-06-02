@@ -227,7 +227,8 @@ const TableList: React.FC<unknown> = () => {
         ]}
         request={async (params, sort, filter) => {
           const res = await getInfo();
-          const data = res.sort((a, b) => b.number - a.number);
+          // const data = res.sort((a, b) => b.number - a.number);
+          const data = res.sort((a, b) => a.number - b.number);
           const newData = calculateTime(
             data.filter((item) => item.type === Number(tabList)),
           ).sort((a, b) => a.actualTime - b.actualTime);
