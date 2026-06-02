@@ -124,8 +124,10 @@ export default ({ actionRef, type, info }) => {
                       setLabels('材料数量（单位-个）');
                       break;
                     case 2:
-                      setInfos(s + '打算研究的天数（包含通用）');
-                      setLabels('材料数量（单位-天）');
+                      // setInfos(s + '打算研究的天数（包含通用）');
+                      // setLabels('材料数量（单位-天）');
+                      setInfos('没名次填999');
+                      setLabels('国战名次');
                       break;
                     case 3:
                       setInfos(s + '打算练兵的天数（包含通用）');
