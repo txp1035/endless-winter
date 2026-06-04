@@ -11,6 +11,8 @@ import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import Form from './Form';
 
+const 是否允许预约 = false;
+
 function calculateTime(list) {
   const timeList = [];
   const newList = list.map((item) => {
@@ -98,7 +100,9 @@ const TableList: React.FC<unknown> = () => {
           key: 'option',
           width: 200,
           render: (text, record, _, action) => [
-            <Form type="edit" actionRef={actionRef} info={record} />,
+            是否允许预约 && (
+              <Form type="edit" actionRef={actionRef} info={record} />
+            ),
             IS_DEV && (
               <a
                 key="view"
@@ -201,7 +205,7 @@ const TableList: React.FC<unknown> = () => {
         pagination={false}
         search={false}
         toolBarRender={() => [
-          <Form type="add" actionRef={actionRef} />,
+          是否允许预约 && <Form type="add" actionRef={actionRef} />,
           IS_DEV && (
             <Button
               type="primary"
