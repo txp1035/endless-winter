@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import Form from './Form';
 
-const 是否允许预约 = false;
+const 是否允许预约 = true;
 
 function calculateTime(list) {
   const timeList = [];
@@ -145,11 +145,13 @@ const TableList: React.FC<unknown> = () => {
         1: { text: '建筑加速' },
         2: { text: '研究加速' },
         3: { text: '练兵加速' },
+        4: { text: '研究加速（日常）' },
       },
     },
     {
-      // title: `材料数量(${tabList === '1' ? '个' : '天'})`,
-      title: `材料数量(${tabList === '1' ? '个' : '名次'})`,
+      title: `材料数量(${
+        tabList === '1' ? '个' : tabList === '4' ? '名次' : '天'
+      })`,
       width: 200,
       dataIndex: 'number',
     },
@@ -188,6 +190,7 @@ const TableList: React.FC<unknown> = () => {
         { tab: '建筑加速', key: '1' },
         { tab: '练兵加速', key: '3' },
         { tab: '研究加速', key: '2' },
+        // { tab: '研究加速（日常）', key: '4' },
       ]}
       tabActiveKey={tabList}
       tabProps={{

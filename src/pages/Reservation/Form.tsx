@@ -112,6 +112,10 @@ export default ({ actionRef, type, info }) => {
                     value: 3,
                     label: '教育部长（练兵加速）',
                   },
+                  // {
+                  //   value: 4,
+                  //   label: '副执政（研究加速）',
+                  // },
                 ]}
                 width={220}
                 name="type"
@@ -124,14 +128,16 @@ export default ({ actionRef, type, info }) => {
                       setLabels('材料数量（单位-个）');
                       break;
                     case 2:
-                      // setInfos(s + '打算研究的天数（包含通用）');
-                      // setLabels('材料数量（单位-天）');
-                      setInfos('没名次填999');
-                      setLabels('国战名次');
+                      setInfos(s + '打算研究的天数（包含通用）');
+                      setLabels('材料数量（单位-天）');
                       break;
                     case 3:
                       setInfos(s + '打算练兵的天数（包含通用）');
                       setLabels('材料数量（单位-天）');
+                      break;
+                    case 4:
+                      setInfos('没名次填999');
+                      setLabels('国战名次');
                       break;
                     default:
                       break;
