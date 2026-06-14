@@ -42,3 +42,19 @@ export const editInfo = async (obj: { id: string }) => {
   });
   await query.save();
 };
+
+export const getSetting = async () => {
+  const query = Bmob.Query('setting');
+  const list = await query.find();
+  return [...list].map((item) => ({ ...item, id: item.objectId }));
+};
+export const editSetting = async (obj: { id: string }) => {
+  const { id, ...rest } = obj;
+  console.log(obj);
+  const query = Bmob.Query('setting');
+  query.set('id', id);
+  Object.entries(rest).forEach(([key, value]) => {
+    query.set(key, value);
+  });
+  await query.save();
+};

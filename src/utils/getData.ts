@@ -5,6 +5,8 @@ export const deleteInfo = bmob.deleteInfo;
 export const editInfo = bmob.editInfo;
 export const getInfo = bmob.getInfo;
 export const saveInfo = bmob.saveInfo;
+export const editSetting = bmob.editSetting;
+export const getSetting = bmob.getSetting;
 
 // export const deleteInfo = leancloud.deleteInfo;
 // export const editInfo = leancloud.editInfo;

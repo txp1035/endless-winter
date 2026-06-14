@@ -1,17 +1,16 @@
 import { IS_DEV } from '@/constants';
-import { deleteInfo, editInfo, getInfo } from '@/utils/getData';
+import { deleteInfo, editInfo, getInfo, getSetting } from '@/utils/getData';
 import type { ActionType } from '@ant-design/pro-components';
 import {
   PageContainer,
   ProDescriptionsItemProps,
   ProTable,
 } from '@ant-design/pro-components';
+import { useRequest } from '@umijs/max';
 import { Button, Modal } from 'antd';
 import dayjs from 'dayjs';
 import React, { useRef, useState } from 'react';
 import Form from './Form';
-
-const 是否允许预约 = true;
 
 function calculateTime(list) {
   const timeList = [];
@@ -89,6 +88,14 @@ function getIsEdit(tabList) {
 }
 
 const TableList: React.FC<unknown> = () => {
+  const {
+    data: 是否允许预约,
+    error,
+    loading,
+  } = useRequest(async () => {
+    const 控制预约 = await getSetting();
+    return { data: 控制预约[0].value };
+  });
   const [tabList, setTabList] = useState('1');
   const isEdit = getIsEdit(tabList);
   const actionRef = useRef<ActionType>();
