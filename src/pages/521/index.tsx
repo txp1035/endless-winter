@@ -41,9 +41,6 @@ function 默认小号对应的大号名字() {
     });
   return list;
 }
-function 打折号() {
-  return nameList.filter((item) => item.等级).map((item) => item.名字[0]);
-}
 
 const 小榜名次对应的奖励 = {
   小榜: {
@@ -181,16 +178,15 @@ function processFractionData(data, key) {
   const 分数转移数据 = [];
   const 持有分数数据 = [];
   const list = 默认小号对应的大号名字();
-  const list1 = 打折号();
   JSON.parse(JSON.stringify(data)).forEach((element) => {
     const obj = {
       ...element,
-      原始分数: element.分数,
+      自身分数: element.分数,
       名字: 名字映射[element.名字] || element.名字,
     };
-    if (list1.includes(obj.名字)) {
-      obj.分数 = obj.原始分数 * 0.5;
-      obj.打折后分数 = obj.原始分数 * 0.5;
+    if (obj.等级) {
+      obj.分数 = obj.自身分数 * 0.5;
+      obj.打折后分数 = obj.自身分数 * 0.5;
     }
     if (obj.分数转移 === obj.名字) {
       console.log('错误', obj);
@@ -211,15 +207,19 @@ function processFractionData(data, key) {
     );
     if (持有分数人) {
       持有分数人.分数 = 持有分数人.分数 + element.分数;
-      持有分数人.分数来自 =
-        (持有分数人.分数来自 || '') + ' ' + element.名字 + '-' + element.分数;
+      持有分数人.其他分数来自 =
+        (持有分数人.其他分数来自 || '') +
+        ' ' +
+        element.名字 +
+        '-' +
+        element.分数;
       element.分数 = 0;
     } else {
       持有分数数据.push({
         名字: element.分数转移,
         分数: element.分数,
-        分数来自: element.名字 + '-' + element.分数,
-        原始分数: 0,
+        其他分数来自: element.名字 + '-' + element.分数,
+        自身分数: 0,
         总排名: '无',
       });
       element.分数 = 0;
@@ -334,7 +334,15 @@ const 最终数据 = Object.entries(objData)
         return Number((pre + cur[1].积分).toFixed(2));
       }, 0);
     const 综合积分 = Number((总积分 - 小榜积分).toFixed(2));
-    const item = { 名字: key, ...value, 总积分, 小榜积分, 综合积分 };
+    const item = {
+      名字: key,
+      ...value,
+      总积分,
+      小榜积分,
+      综合积分,
+      一期积分: value[Object.keys(data)[0]]?.积分 || 0,
+      二期积分: value[Object.keys(data)[1]]?.积分 || 0,
+    };
     const obj = { ...item };
     return obj;
   })
@@ -652,7 +660,7 @@ const TableList: React.FC<unknown> = () => {
               分数：活动中该账号的实际分数+活动中其他账号（小号或者朋友号）的的实际分数
             </div>
             <div>排名：活动中的实际排名</div>
-            <div>原始分数：活动中该账号的实际分数</div>
+            <div>自身分数：活动中该账号的实际分数</div>
             <div>
               转换分数：不同活动消耗材料得到的分数不同，这个分数保证每个活动消耗同样的材料得到一样的分数
             </div>
@@ -685,6 +693,28 @@ const TableList: React.FC<unknown> = () => {
         )}
         toolBarRender={() => {
           return [
+            <Button
+              type="primary"
+              onClick={() => {
+                const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                  (a, b) => b.一期积分 - a.一期积分,
+                );
+                setDataSource(data);
+              }}
+            >
+              按第1期国战积分排序
+            </Button>,
+            <Button
+              type="primary"
+              onClick={() => {
+                const data = JSON.parse(JSON.stringify(dataSource)).sort(
+                  (a, b) => b.二期积分 - a.二期积分,
+                );
+                setDataSource(data);
+              }}
+            >
+              按第2期国战积分排序
+            </Button>,
             IS_DEV && (
               <Button
                 type="primary"
