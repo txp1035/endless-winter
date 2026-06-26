@@ -293,14 +293,15 @@ Object.entries(data).forEach(([key, value]) => {
 const number = { 一档: 0, 二档: 0, 三档: 0, 四档: 0 };
 const number议会情况 = { 一档: 0, 二档: 0, 三档: 0, 四档: 0 };
 const 议会 = [
-  '488303971',
-  '488106222',
-  '487418078',
-  '489664664',
-  '489105630',
-  '488451573',
-  '488696770',
-  '487516373',
+  '488303971', //三大大
+  '488106222', //愚者丶
+  '487418078', //初九丶
+  '489664664', //道锤冥墟（玄幻版）
+  '488451573', //小二终于要熬成掌柜了
+  '488696770', //十二丶
+  // '487516373', //往事如风丶
+  '534403547', //闪闪闪
+  '489105630', //亚奇洛贝
 ].map((item) => {
   const 人 = nameList.find((item1) => item1.id === item);
   return 人?.名字[0];
@@ -699,6 +700,10 @@ const TableList: React.FC<unknown> = () => {
                 const data = JSON.parse(JSON.stringify(dataSource)).sort(
                   (a, b) => b.一期积分 - a.一期积分,
                 );
+                // const names = data
+                //   .map((item) => item.名字)
+                //   .filter((_, index) => index < 15);
+                // Modal.info({ title: '前15名', content: names });
                 setDataSource(data);
               }}
             >
@@ -710,6 +715,10 @@ const TableList: React.FC<unknown> = () => {
                 const data = JSON.parse(JSON.stringify(dataSource)).sort(
                   (a, b) => b.二期积分 - a.二期积分,
                 );
+                // const names = data
+                //   .map((item) => item.名字 + ' | ')
+                //   .filter((_, index) => index < 15);
+                // Modal.info({ title: '前15名', content: names });
                 setDataSource(data);
               }}
             >
