@@ -9,6 +9,7 @@ export const deleteInfo = async (id) => {
 };
 export const getInfo = async () => {
   const query = Bmob.Query('wjdr');
+  query.limit(1000);
   const list = await query.find();
   return [...list].map((item) => ({ ...item, id: item.objectId }));
 };
