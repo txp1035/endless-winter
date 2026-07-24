@@ -922,7 +922,7 @@ const TableList: React.FC<unknown> = () => {
                     return 名字映射[item];
                   });
                   const q100 = dataSource
-                    .filter((item, index) => index <= 99)
+                    .filter((item, index) => index <= 99 && item.档位)
                     .map((item) => item.名字);
 
                   const 白名单要删除 = 新白名单.filter(
