@@ -33,7 +33,7 @@ export default function index() {
       <Switch
         value={控制预约}
         onChange={(value) => {
-          editSetting({ id: 'd2d61b02fa', value: value, memo: '控制预约' });
+          editSetting({ id: '6657414c4f', value: value, memo: '控制预约' });
         }}
       />
       <Link to="/list">小榜排名</Link>
