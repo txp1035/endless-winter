@@ -180,7 +180,12 @@ function processFractionData(data, key) {
   const 分数转移数据 = [];
   const 持有分数数据 = [];
   const list = 默认小号对应的大号名字();
-  JSON.parse(JSON.stringify(data)).forEach((element) => {
+  let 使用默认小号 = true;
+  JSON.parse(JSON.stringify(data)).forEach((element, index) => {
+    // 临时用名字决定
+    if (index === 0 && element.名字 === '如影随形') {
+      使用默认小号 = false;
+    }
     const obj = {
       ...element,
       自身分数: element.分数,
@@ -193,7 +198,7 @@ function processFractionData(data, key) {
     if (obj.分数转移 === obj.名字) {
       console.log('错误', obj);
     }
-    if (obj.名字 in list && !obj.分数转移) {
+    if (obj.名字 in list && !obj.分数转移 && 使用默认小号) {
       obj.分数转移 = list[obj.名字];
     }
     if (obj.分数转移) {

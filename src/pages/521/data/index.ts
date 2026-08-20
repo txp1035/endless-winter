@@ -7,6 +7,7 @@ import data from './data.json';
 import 国战20260524 from './国战20260524.json';
 import 国战20260621 from './国战20260621.json';
 import 国战20260718 from './国战20260718.json';
+import 国战20260816 from './国战20260816.json';
 
 const obj = IS_DEV
   ? {
@@ -23,4 +24,5 @@ console.log(obj);
 export default {
   // ...obj,
   '2026-07-18国战': 国战20260718,
+  '2026-08-16国战': 国战20260816,
 };
