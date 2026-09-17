@@ -182,8 +182,8 @@ function processFractionData(data, key) {
   const list = 默认小号对应的大号名字();
   let 使用默认小号 = true;
   JSON.parse(JSON.stringify(data)).forEach((element, index) => {
-    // 临时用名字决定
-    if (index === 0 && element.名字 === '如影随形') {
+    // 临时用分数决定
+    if (index === 0 && element.分数 === 125647999) {
       使用默认小号 = false;
     }
     const obj = {
